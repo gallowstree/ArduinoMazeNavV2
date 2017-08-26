@@ -1,64 +1,36 @@
 #include <Arduino.h>
-#include <Wire.h>
-#include <string.h>
-#include "DistanceSensor.h"
-#include "WifiConnection.h"
-#include "TcpDispatcher.h"
-#include "ImuReader.h"
-#include "MotionController.h"
-#include "CommandDispatcher.h"
-#include "Odometer.h"
+#include "DcMotor.h"
+#include "SelfTests.h"
 
-DistanceSensor sensor1(A0, A1);
-DistanceSensor sensor2(A2, A3);
+DcMotor leftMotor(A1, A0, 2, 200);
+DcMotor rightMotor(A2, A3, 3, 200);
 
+int encoderResolution = 230;
+double wheelRadius = 2.1; //cm
 
-MotorDriver mtrDriver;
-ImuReader imu;
-Odometer odometer(20, 21, 18, 19);
-SpeedControl speedCtl(&Odometer::leftAngularVelocity, &Odometer::rightAngularVelocity, &mtrDriver);
-MotionController motion(&odometer, &mtrDriver, &speedCtl);
-RouteExecutor routeExec(&motion);
+EncoderReader leftEncoder(21, 20, encoderResolution, wheelRadius);
+EncoderReader rightEncoder(18, 19, encoderResolution, wheelRadius);
 
-WifiConnection conn;
-CommandDispatcher cmdDispatcher(&motion, &routeExec);
-TcpDispatcher tcpDispatcher(4420, &cmdDispatcher);
-
-float prevLeft = 0;
-float prevRight = 0;
-
-MotorDriver* Odometer::motors;
-
-void setup() {
-	Serial.begin(9600);
-	Serial.println("Starting up :3");
-	Wire.begin();
-	delay(1000);
-	
-	// conn.Begin();
-	// tcpDispatcher.begin();
-
-	Odometer::motors = &mtrDriver;	
-	Odometer::theSpeedCtl = &speedCtl;
-	odometer.enable();
+static void leftIsr() {
+	leftEncoder.isr();
 }
 
-void printInterruptCounters() {
-	int left = Odometer::leftInt;
-	int right = Odometer::rightInt;
+static void rightIsr() {
+	rightEncoder.isr();
+}
 
-	if (prevLeft != left || prevRight != right) {
-		Serial.print("Left: ");
-		Serial.print(left);
-		Serial.print("Right: ");
-		Serial.println(right);
-		prevLeft = left;
-		prevRight = right;
-	}
+void setup() {	
+	Serial.begin(9600);
+	Serial.println("Radio Live Transmission...");
+	
+	delay(3000);
+
+	leftEncoder.enable(&leftIsr);
+	rightEncoder.enable(&rightIsr);
+	
 }
 
 void loop() {
-	//tcpDispatcher.checkForPackets();	
-	printInterruptCounters();	
-	
+	//motorsSimpleTest(leftMotor, rightMotor);	
+	testInterruptCounters(leftEncoder, rightEncoder);
 }

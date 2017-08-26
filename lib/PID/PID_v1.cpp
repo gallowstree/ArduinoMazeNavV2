@@ -47,8 +47,11 @@ PID::PID(volatile double* Input, volatile double* Output, double* Setpoint,
 bool PID::Compute()
 {
    if(!inAuto) return false;
+   
    unsigned long now = millis();
    unsigned long timeChange = (now - lastTime);
+   
+
    if(timeChange>=SampleTime)
    {
       /*Compute all the working error variables*/
