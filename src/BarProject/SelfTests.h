@@ -55,4 +55,36 @@ void testInterruptCounters(EncoderReader& l, EncoderReader& r) {
 
     
 }
+
+
+// void testTimePerTick() {
+//     rightEncoder.enable(&rightIsr);	
+// 	rightMotor.move(Direction::FORWARD);
+	
+// 	leftEncoder.enable(&leftIsr);
+// 	leftMotor.move(Direction::FORWARD);
+	
+	
+
+// 	delay(10000);
+
+// 	Serial.print("L: ");
+// 	Serial.print(leftEncoder.ticks);
+// 	Serial.print(" ");
+// 	Serial.print(leftEncoder.time);
+
+// 	Serial.print(" R: ");
+// 	Serial.print(rightEncoder.ticks);
+// 	Serial.print(" ");
+// 	Serial.println(rightEncoder.time);
+
+// 	rightMotor.stop();
+// 	rightEncoder.disable();
+
+// 	leftMotor.stop();	
+// 	leftEncoder.disable();
+	
+
+// 	delay(3000);
+// }
 #endif
