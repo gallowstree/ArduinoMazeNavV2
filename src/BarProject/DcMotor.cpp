@@ -13,11 +13,10 @@ pulseLength(initialPulseLength)
     analogWrite(pwmPin, pulseLength);
 }
 
-//Should we start/stop based on pulse length instead? (And remember direction)
-
 void DcMotor::stop() {
     digitalWrite(out1, LOW);
     digitalWrite(out2, LOW);
+    //Should we reset the pulseLength?
 }
 
 void DcMotor::move(Direction direction) {
@@ -27,7 +26,8 @@ void DcMotor::move(Direction direction) {
 }
 
 void DcMotor::setPulseLength(int p) {
-    pulseLength = p;
+    pulseLength = p; //maybe this variable is not needed
+    analogWrite(pwmPin, pulseLength);
 }
 
 int DcMotor::getPulseLength() {

@@ -1,7 +1,7 @@
 #include "EncoderReader.h"
 #include <Arduino.h>
 
-EncoderReader::EncoderReader(int interruptPinA, int interruptPinB, int resolution, double radius) :
+EncoderReader::EncoderReader(int interruptPinA, int interruptPinB, double resolution, double radius) :
 interruptPinA(interruptPinA),
 interruptPinB(interruptPinB),
 resolution(resolution),
@@ -10,7 +10,7 @@ radius(radius)
 
 }
 
-void EncoderReader::enable(void (*isr) (void)) {
+void EncoderReader::enable() {
     ticks = 0;
     time = 0;
     oldTicks = 0;
@@ -24,9 +24,8 @@ void EncoderReader::disable() {
     detachInterrupt(digitalPinToInterrupt(interruptPinB));
 }
 
-void EncoderReader::isr() {
-    if(time == 0)
-    {
+void EncoderReader::tick() {
+    if(time == 0) {
         time = millis();
     }
 
@@ -38,12 +37,12 @@ void EncoderReader::isr() {
     }
 
     int diffTime = millis() - time;
-    if(diffTime >= 10)
-    {
-        angularSpeed = (((abs(ticks) - oldTicks) / resolution) * TWO_PI) / diffTime;
+
+    if (diffTime >= 10) {
+        double diffAngle = (((abs(ticks) - oldTicks) / resolution) * TWO_PI);
+        angularSpeed = diffAngle / (diffTime / 1000.0);
         time = millis();
-        oldTicks = abs(ticks);
-        isrCounter++;
+        oldTicks = abs(ticks);              
     }
 }
 

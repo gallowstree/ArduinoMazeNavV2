@@ -4,24 +4,25 @@
 class EncoderReader {
 
 public:
-    EncoderReader(int interruptPinA, int interruptPinB, int resolution, double radius);
-    void enable(void (*isr) (void));
+    EncoderReader(int interruptPinA, int interruptPinB, double resolution, double radius);
+    void enable();
     void disable();
-    void isr();
+    void tick();
     double getDistance();
 
     volatile int ticks;
     volatile int oldTicks;
     volatile unsigned long time;
     volatile double angularSpeed;
-    
-    volatile int isrCounter = 0; 
+
+    void (*isr) (void);
+        
 private:
     
     
     const int interruptPinA;
     const int interruptPinB;
-    const int resolution;
+    const double resolution;
     const double radius;
 };
 
