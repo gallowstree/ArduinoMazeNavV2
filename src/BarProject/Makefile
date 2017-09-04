@@ -22,12 +22,12 @@ ARDMK_DIR         = $(PROJECT_DIR)/Arduino-Makefile
 ### For Arduino IDE 1.0.x
 # ARDUINO_DIR       = /Applications/Arduino.app/Contents/Resources/Java
 ### For Arduino IDE 1.6.x
-ARDUINO_DIR       = /Applications/Arduino.app/Contents/Java
+ARDUINO_DIR       = /opt/arduino/arduino-1.8.3
 
 ### USER_LIB_PATH
 ### Path to where the your project's libraries are stored.
 USER_LIB_PATH    :=  $(realpath $(PROJECT_DIR)/lib)
-ARDUINO_LIBS = SPI SoftwareSerial Wire WiFi ESP8266 MPU9250 PID PID-AutoTune
+ARDUINO_LIBS = SPI SoftwareSerial Wire WiFi ESP8266 PID
 
 ### BOARD_TAG & BOARD_SUB
 ### For Arduino IDE 1.0.x
@@ -45,7 +45,7 @@ MONITOR_BAUDRATE  = 9600
 
 ### AVR_TOOLS_DIR
 ### Path to the AVR tools directory such as avr-gcc, avr-g++, etc.
-AVR_TOOLS_DIR     = /usr/local
+AVR_TOOLS_DIR     = /usr
 
 ### AVRDDUDE
 ### Path to avrdude directory.
@@ -68,7 +68,7 @@ endif
 
 ### MONITOR_PORT
 ### The port your board is connected to. Using an '*' tries all the ports and finds the right one.
-MONITOR_PORT      = /dev/tty.usbmodem*
+MONITOR_PORT      = /dev/ttyACM0
 
 ### OBJDIR
 ### This is were you put the binaries you just compile using 'make'
