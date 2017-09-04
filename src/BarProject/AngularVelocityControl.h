@@ -8,26 +8,30 @@
 class AngularVelocityControl {
 public:
     AngularVelocityControl(EncoderReader* encoder, DcMotor* motor);
-    void enable();
+    void enable(int initialMosh);
     void disable();
     void updatePID();
-private:
-    PID myPID;    
-    EncoderReader* encoder = nullptr;
-    DcMotor* motor = nullptr;    
 
     double kp = 3;
     double ki = 0;
     double kd = 0.25;
 
+    double error = 0;
+    double samples = 0; //Actually int
+    double avgVelocity = 0;
+    double setpoint = 15;
+
+    EncoderReader* encoder = nullptr;
+    DcMotor* motor = nullptr; 
+private:
+    PID myPID;    
     bool enabled = false;
 
     double minPwm = 60;
     double maxPwm = 120;
 
     double input = 0;
-    double output = 0;
-    double setpoint = 14;    
+    double output = 0;        
 };
 
 #endif

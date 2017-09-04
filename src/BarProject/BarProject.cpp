@@ -4,6 +4,7 @@
 #include "SpeedControl.h"
 #include "AngularVelocityControl.h"
 #include "Navigator.h"
+#include "AngularVelocityAutotune.h"
 
 int encoderResolution = 230;
 double wheelRadius = 2.1; //cm
@@ -26,7 +27,7 @@ long time = 0;
 
 static void leftIsr() {
 	leftEncoder.tick();
-	//leftControl.updatePID();
+	leftControl.updatePID();
 }
 
 static void rightIsr() {
@@ -42,13 +43,18 @@ void setup() {
 	leftEncoder.isr = &leftIsr;
 	rightEncoder.isr = &rightIsr;
 
-	leftEncoder.enable();
+	/* leftEncoder.enable();
 	rightEncoder.enable();
 	speedControl.enable();
+	 */
+
 	// rightControl.enable();
 	// leftControl.enable();
 	
-	Serial.println("Setup Done");
+	AngularVelocityAutotune tune(&leftControl);
+	tune.start();
+
+	Serial.println("Tuning Done");
 	
 	time = millis();
 
@@ -61,14 +67,19 @@ void loop() {
 	 /*Serial.print("rs: ");
 	 Serial.print(rightEncoder.angularSpeed);
 	 Serial.print("ls: ");
-	 Serial.println(leftEncoder.angularSpeed);*/	 
+	 Serial.println(leftEncoder.angularSpeed);*/
+	 
+	 
+	/*  
 	delay(3000);
 	navigator.move(50, Direction::FORWARD);
 	delay(500);
 	navigator.rotate(90, false);
 	delay(500);
 	navigator.move(23, Direction::FORWARD);
-	
+	 */
+
+
 	//  int timeDiff = millis() - time;
 	//  if (timeDiff > 2000) {
 	// 	 time = millis();
