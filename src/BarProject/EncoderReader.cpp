@@ -25,20 +25,24 @@ void EncoderReader::disable() {
 }
 
 void EncoderReader::tick() {
+    bool shouldUpdateSpeed = false;
+
     if(time == 0) {
         time = millis();
     }
 
     if (digitalRead(interruptPinA) == HIGH && digitalRead(interruptPinB) == LOW) {
         ticks++;
+        shouldUpdateSpeed = true;
     }
     else if (digitalRead(interruptPinB) == HIGH && digitalRead(interruptPinA) == LOW) {
-        ticks--;
+        ticks++;
+        shouldUpdateSpeed = true;
     }
 
     int diffTime = millis() - time;
 
-    if (diffTime >= 10) {
+    if (shouldUpdateSpeed && diffTime >= 20) {
         double diffAngle = (((abs(ticks) - oldTicks) / resolution) * TWO_PI);
         angularSpeed = diffAngle / (diffTime / 1000.0);
         time = millis();

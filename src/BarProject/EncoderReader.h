@@ -14,6 +14,8 @@ public:
     volatile int oldTicks;
     volatile unsigned long time;
     volatile double angularSpeed;
+    const double resolution;
+    const double radius;
 
     void (*isr) (void);
         
@@ -22,8 +24,7 @@ private:
     
     const int interruptPinA;
     const int interruptPinB;
-    const double resolution;
-    const double radius;
+    
 };
 
 #endif

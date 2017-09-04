@@ -1,5 +1,6 @@
 #include "SpeedControl.h"
 #include <Arduino.h>
+#include <math.h>
 
 SpeedControl::SpeedControl(EncoderReader* leftEncoder, EncoderReader* rightEncoder, DcMotor* leftMotor, DcMotor* rightMotor) :
 leftEncoder(leftEncoder),
@@ -8,8 +9,8 @@ leftMotor(leftMotor),
 rightMotor(rightMotor),
 myPID(&input, &output, &setpoint, kp, ki, kd, DIRECT)
  {
-    myPID.SetSampleTime(10);
-    myPID.SetOutputLimits(-10, 10);
+    myPID.SetSampleTime(20);
+    myPID.SetOutputLimits(-15, 15);
 }
 
 void SpeedControl::enable() {
@@ -32,7 +33,10 @@ void SpeedControl::updatePID() {
     if (!enabled || notReady ) 
         return;
 
-    auto diff = leftEncoder->angularSpeed - rightEncoder->angularSpeed;
+    double asl = leftEncoder->angularSpeed;
+    double asr = rightEncoder->angularSpeed;
+    //auto diff = leftEncoder->angularSpeed - rightEncoder->angularSpeed;
+    auto diff = asl - asr;
     input = diff;
     
     if (!myPID.Compute()) 
@@ -49,21 +53,22 @@ void SpeedControl::updatePID() {
     if (newRight > maxPwm) newRight = maxPwm;
     else if (newRight < minPwm) newRight = minPwm;
     
-    leftMotor->setPulseLength(newLeft);
-    rightMotor->setPulseLength(newRight);
-    // Serial.print("i: ");
-    // Serial.print(input);
-    // Serial.print("o: ");
-    // Serial.print(output);
+    leftMotor->setPulseLength((int) ceil(newLeft));
+    rightMotor->setPulseLength((int) ceil(newRight));
+
     
-    Serial.print(" lv: ");
-    Serial.print(leftEncoder->angularSpeed);
-    Serial.print(" rv: ");
-    Serial.print(rightEncoder->angularSpeed);
-    Serial.print(" nl: ");
-    Serial.print(newLeft);
-    Serial.print(" nr: ");
-    Serial.println(newRight);
+    // Serial.print(" diff: ");
+    // Serial.print(diff);
+    // Serial.print(" output: ");
+    // Serial.print(output);
+    // Serial.print(" lv: ");
+    // Serial.print(asl);
+    // Serial.print(" rv: ");
+    // Serial.print(asr);
+    // Serial.print(" nl: ");
+    // Serial.print(newLeft);
+    // Serial.print(" nr: ");
+    // Serial.println(newRight);
 
     
 }
