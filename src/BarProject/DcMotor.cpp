@@ -27,6 +27,7 @@ void DcMotor::move(Direction direction) {
 
 void DcMotor::setPulseLength(int p) {
     pulseLength = p; //maybe this variable is not needed
+    //Serial.print("p")
     analogWrite(pwmPin, pulseLength);
 }
 
