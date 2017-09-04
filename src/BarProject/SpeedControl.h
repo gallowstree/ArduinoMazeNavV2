@@ -11,18 +11,22 @@ public:
     void enable();
     void disable();
     void updatePID();
-private:
-    PID myPID;
+
+    double kp = 9;
+    double ki = 0;
+    double kd = 0;
+
+    double error = 0;
+    double samples = 0; //Actually int
+    double avgVelocity = 0;
 
     EncoderReader* leftEncoder = nullptr;
     EncoderReader* rightEncoder = nullptr;
 
     DcMotor* leftMotor = nullptr;
     DcMotor* rightMotor = nullptr;
-
-    double kp = 9;
-    double ki = 0;
-    double kd = 0;
+private:
+    PID myPID;    
 
     bool enabled = false;
 

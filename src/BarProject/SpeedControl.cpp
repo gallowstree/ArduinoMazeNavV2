@@ -13,7 +13,9 @@ myPID(&input, &output, &setpoint, kp, ki, kd, DIRECT)
     myPID.SetOutputLimits(-15, 15);
 }
 
-void SpeedControl::enable() {
+void SpeedControl::enable(int initialMosh) {
+    leftMotor->setPulseLength(initialMosh);
+    rightMotor->setPulseLength(initialMosh);
     Serial.println("enabling speedctl");
     enabled = true;
     myPID.SetMode(AUTOMATIC);
@@ -24,6 +26,7 @@ void SpeedControl::disable() {
     Serial.println("disabling speedctl");
     myPID.SetMode(MANUAL);
     enabled = false;
+    avgVelocity /= samples;
 }
 
 void SpeedControl::updatePID() {
@@ -34,8 +37,7 @@ void SpeedControl::updatePID() {
         return;
 
     double asl = leftEncoder->angularSpeed;
-    double asr = rightEncoder->angularSpeed;
-    //auto diff = leftEncoder->angularSpeed - rightEncoder->angularSpeed;
+    double asr = rightEncoder->angularSpeed;    
     auto diff = asl - asr;
     input = diff;
     
@@ -56,6 +58,9 @@ void SpeedControl::updatePID() {
     leftMotor->setPulseLength((int) ceil(newLeft));
     rightMotor->setPulseLength((int) ceil(newRight));
 
+    error += abs(setpoint - input);
+    samples++;
+    avgVelocity += input;
     
     // Serial.print(" diff: ");
     // Serial.print(diff);
