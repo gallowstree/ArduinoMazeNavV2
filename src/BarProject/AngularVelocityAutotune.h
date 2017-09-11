@@ -7,7 +7,7 @@ class AngularVelocityAutotune : public TwiddleAutotune {
 public:
     AngularVelocityAutotune(AngularVelocityControl* ctl);
     virtual double iterate(double p[]); 
-    int initialMosh = 65;
+    int initialMosh = 55;
     double targetVelocity = 15;
 private:
     AngularVelocityControl* ctl;        

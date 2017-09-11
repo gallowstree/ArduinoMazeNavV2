@@ -42,11 +42,11 @@ void EncoderReader::tick() {
 
     int diffTime = millis() - time;
 
-    if (shouldUpdateSpeed && diffTime >= 20) {
+    if (shouldUpdateSpeed && diffTime >= 10) {
         double diffAngle = (((abs(ticks) - oldTicks) / resolution) * TWO_PI);
         angularSpeed = diffAngle / (diffTime / 1000.0);
         time = millis();
-        oldTicks = abs(ticks);              
+        oldTicks = abs(ticks);          
     }
 }
 

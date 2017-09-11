@@ -58,10 +58,6 @@ void Navigator::waitForDistance(double distanceCm) {
     int targetTicks = (int) floor(distanceCm / (TWO_PI * leftEncoder->radius) * leftEncoder->resolution);    
 
     while (leftEncoder->ticks < targetTicks || rightEncoder->ticks < targetTicks) {
-        
-        Serial.print(leftEncoder->ticks);
-        Serial.print(" ");
-        Serial.println(rightEncoder->ticks);
 
         speedControl->updatePID();
         if (leftEncoder->ticks >= targetTicks) {

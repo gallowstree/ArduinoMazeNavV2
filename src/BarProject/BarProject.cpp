@@ -43,26 +43,31 @@ void setup() {
 	leftEncoder.isr = &leftIsr;
 	rightEncoder.isr = &rightIsr;
 
-	/* leftEncoder.enable();
-	rightEncoder.enable();
+	leftEncoder.enable();
+	leftControl.enable(60);
+	/*rightEncoder.enable();
 	speedControl.enable();
 	 */
 
 	// rightControl.enable();
 	// leftControl.enable();
 	
-	AngularVelocityAutotune tune(&leftControl);
-	tune.start();
+	//AngularVelocityAutotune tune(&leftControl);
+	//tune.start();
 
-	Serial.println("Tuning Done");
+	//Serial.println("Tuning Done");
 	
 	time = millis();
 
 }
 
 
-Direction direction = Direction::FORWARD;
 void loop() {	
+	leftEncoder.enable();
+	leftMotor.move(FORWARD);
+	delay(3000);
+	leftEncoder.disable();
+	
 	 //testInterruptCounters(leftEncoder, rightEncoder);
 	 /*Serial.print("rs: ");
 	 Serial.print(rightEncoder.angularSpeed);

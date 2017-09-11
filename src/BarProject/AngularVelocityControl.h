@@ -4,6 +4,7 @@
 #include "EncoderReader.h"
 #include "DcMotor.h"
 #include "PID_v1.h"
+#include "PID_AutoTune_v0.h"
 
 class AngularVelocityControl {
 public:
@@ -25,10 +26,14 @@ public:
     DcMotor* motor = nullptr; 
 private:
     PID myPID;    
+    PID_ATune aTune;
+    bool tuning = true;
+    int ATuneModeRemember=2;
+    
     bool enabled = false;
-
     double minPwm = 60;
     double maxPwm = 120;
+    
 
     double input = 0;
     double output = 0;        
