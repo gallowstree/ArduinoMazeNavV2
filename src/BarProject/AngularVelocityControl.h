@@ -13,10 +13,6 @@ public:
     void disable();
     void updatePID();
 
-    double kp = 3;
-    double ki = 0;
-    double kd = 0.25;
-
     double error = 0;
     double samples = 0; //Actually int
     double avgVelocity = 0;
@@ -27,7 +23,7 @@ public:
 private:
     PID myPID;    
     PID_ATune aTune;
-    bool tuning = true;
+    bool tuning = false;
     int ATuneModeRemember=2;
     
     bool enabled = false;

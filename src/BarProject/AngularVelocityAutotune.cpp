@@ -8,16 +8,16 @@ ctl(ctl) {
 }
 
  double AngularVelocityAutotune::iterate(double p[]) {
-    ctl->kp = p[0];
-    ctl->ki = p[1];
-    ctl->kd = p[2];
+    ctl->motor->kp = p[0];
+    ctl->motor->ki = p[1];
+    ctl->motor->kd = p[2];
 
     Serial.print("Iterating with p:");
-    Serial.print(ctl->kp, 6);
+    Serial.print(ctl->motor->kp, 6);
     Serial.print(" i:");
-    Serial.print(ctl->ki, 6);
+    Serial.print(ctl->motor->ki, 6);
     Serial.print(" d:");
-    Serial.println(ctl->kd, 6);
+    Serial.println(ctl->motor->kd, 6);
 
     ctl->setpoint = targetVelocity;
     ctl->encoder->enable();

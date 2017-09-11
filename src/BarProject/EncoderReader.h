@@ -10,8 +10,8 @@ public:
     void tick();
     double getDistance();
 
-    volatile int ticks;
-    volatile int oldTicks;
+    volatile unsigned long ticks;
+    volatile unsigned long oldTicks;
     volatile unsigned long time;
     volatile double angularSpeed;
     const double resolution;

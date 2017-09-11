@@ -13,8 +13,8 @@ int initialPwm = 60;
 EncoderReader leftEncoder(21, 20, encoderResolution, wheelRadius);
 EncoderReader rightEncoder(18, 19, encoderResolution, wheelRadius);
 
-DcMotor leftMotor(A1, A0, 4, initialPwm);
-DcMotor rightMotor(A2, A3, 3, initialPwm);
+DcMotor leftMotor(A1, A0, 4, initialPwm, 4.66, 78.43, 0.07);
+DcMotor rightMotor(A2, A3, 3, initialPwm, 4.39, 461.86, 0.01);
 
 SpeedControl speedControl(&leftEncoder, &rightEncoder, &leftMotor, &rightMotor);
 
@@ -27,7 +27,7 @@ long time = 0;
 
 static void leftIsr() {
 	leftEncoder.tick();
-	leftControl.updatePID();
+	
 }
 
 static void rightIsr() {
@@ -44,7 +44,9 @@ void setup() {
 	rightEncoder.isr = &rightIsr;
 
 	leftEncoder.enable();
+	rightEncoder.enable();
 	leftControl.enable(60);
+	rightControl.enable(60);
 	/*rightEncoder.enable();
 	speedControl.enable();
 	 */
@@ -58,16 +60,15 @@ void setup() {
 	//Serial.println("Tuning Done");
 	
 	time = millis();
-
+	leftMotor.move(FORWARD);
+	rightMotor.move(FORWARD);
 }
 
 
 void loop() {	
-	leftEncoder.enable();
-	leftMotor.move(FORWARD);
-	delay(3000);
-	leftEncoder.disable();
-	
+	leftControl.updatePID();
+	rightControl.updatePID();
+	//Serial.println(leftEncoder.angularSpeed);
 	 //testInterruptCounters(leftEncoder, rightEncoder);
 	 /*Serial.print("rs: ");
 	 Serial.print(rightEncoder.angularSpeed);

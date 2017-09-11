@@ -5,7 +5,7 @@
 AngularVelocityControl::AngularVelocityControl(EncoderReader* encoder, DcMotor* motor) :
 encoder(encoder),
 motor(motor),
-myPID(&input, &output, &setpoint, kp, ki, kd, DIRECT),
+myPID(&input, &output, &setpoint, motor->kp, motor->ki, motor->kd, DIRECT),
 aTune(&input,&output),
 error(0)
  {
@@ -21,7 +21,7 @@ void AngularVelocityControl::enable(int initialMosh) {
     Serial.println(initialMosh);
     enabled = true;
     myPID.SetMode(AUTOMATIC);
-
+    ATuneModeRemember = myPID.GetMode();
     if(tuning)
     {
       double outputStart=5;
@@ -32,14 +32,13 @@ void AngularVelocityControl::enable(int initialMosh) {
       aTune.SetNoiseBand(aTuneNoise);
       aTune.SetOutputStep(aTuneStep);
       aTune.SetLookbackSec((int)aTuneLookBack);
-      ATuneModeRemember = myPID.GetMode();
       tuning = true;
     }
     else
     { //cancel autotune
       aTune.Cancel();
       myPID.SetMode(ATuneModeRemember);
-      myPID.SetTunings(kp, ki, kd);  
+      myPID.SetTunings(motor->kp, motor->ki, motor->kd);  
     }  
 }
 
@@ -56,7 +55,6 @@ void AngularVelocityControl::updatePID() {
         return;
     
     input = encoder->angularSpeed;
-    
     if(tuning)
     {
         byte val = (aTune.Runtime());
@@ -67,17 +65,17 @@ void AngularVelocityControl::updatePID() {
         }
         if(!tuning)
         { //we're done, set the tuning parameters
-          kp = aTune.GetKp();
-          ki = aTune.GetKi();
-          kd = aTune.GetKd();
+          motor->kp = aTune.GetKp();
+          motor->ki = aTune.GetKi();
+          motor->kd = aTune.GetKd();
           Serial.println("Tuning done!");
           Serial.print("kp: ");
-          Serial.print(kp);
+          Serial.print(motor->kp);
           Serial.print("kd: ");
-          Serial.print(kd);
+          Serial.print(motor->kd);
           Serial.print("ki: ");
-          Serial.print(ki);
-          myPID.SetTunings(kp,ki,kd);
+          Serial.print(motor->ki);
+          myPID.SetTunings(motor->kp,motor->ki,motor->kd);
           myPID.SetMode(ATuneModeRemember);
         }
     }
