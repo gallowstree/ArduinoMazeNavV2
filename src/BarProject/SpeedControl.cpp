@@ -9,7 +9,7 @@ leftMotor(leftMotor),
 rightMotor(rightMotor),
 myPID(&input, &output, &setpoint, kp, ki, kd, DIRECT)
  {
-    myPID.SetSampleTime(20);
+    myPID.SetSampleTime(55);
     myPID.SetOutputLimits(-15, 15);
 }
 

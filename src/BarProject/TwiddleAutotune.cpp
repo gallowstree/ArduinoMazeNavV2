@@ -16,8 +16,8 @@ double sum(double nums[]) {
 
 
 void TwiddleAutotune::start() {
-    double p[] = {20, 2, 0};
-    double dp[] = {1, 1, 1};
+    double p[] = {0, 0, 0};
+    double dp[] = {1, 0.25, 0.25};
     double best_error = iterate(p);
     double threshold = 0.001;
 

@@ -24,7 +24,7 @@ void EncoderReader::disable() {
     detachInterrupt(digitalPinToInterrupt(interruptPinB));
 }
 
-void EncoderReader::tick() {
+bool EncoderReader::tick() {
     bool shouldUpdateSpeed = false;
 
     if(time == 0) {
@@ -47,7 +47,9 @@ void EncoderReader::tick() {
         angularSpeed = diffAngle / (diffTime / 1000.0);
         time = millis();
         oldTicks = abs(ticks);          
+        return true;
     }
+    return false;
 }
 
 double EncoderReader::getDistance() {

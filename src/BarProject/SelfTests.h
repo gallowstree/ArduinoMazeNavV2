@@ -3,6 +3,9 @@
 
 #include "DcMotor.h"
 #include "EncoderReader.h"
+#include "Navigator.h"
+#include "MazeProperties.h"
+#include "WallDetector.h"
 #include <Arduino.h>
 
 void motorsSimpleTest(DcMotor& l, DcMotor& r) {
@@ -56,6 +59,25 @@ void testInterruptCounters(EncoderReader& l, EncoderReader& r) {
     
 }
 
+/* This will  move  forward one square at a time. It will look for a wall in front of the robot,
+If there is no wall, keep  going forward.  This will return once we face  a wall and will always 
+leave  the robot  facing in  a direction where there is no wall. It will always  check the right
+first, if there is a wall, then try left. If  there is also  a wall, face back to  where we came 
+from.  If this function  is run in a loop,  it should give the robot continuous motion through a 
+bounded path */
+void testContinuousWallDetection(WallDetector* detector, Navigator* navigator, MazeProperties* props) {    
+    while (!detector->isFacingWall()) {        
+        navigator->move(props->tileSize - props->tileBorder, Direction::FORWARD);
+        delay(500);        
+    }    
+    
+    int rotationCount = 0;
+    while (detector->isFacingWall()) {
+        navigator->rotate(90 * ( (rotationCount % 2) + 1 ) , rotationCount < 2);  
+        rotationCount++;
+        delay(500);      
+    }
+}
 
 // void testTimePerTick() {
 //     rightEncoder.enable(&rightIsr);	

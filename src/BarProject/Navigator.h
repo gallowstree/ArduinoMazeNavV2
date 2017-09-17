@@ -20,6 +20,12 @@ public:
     //cm between wheels
     double rotationRadius = 4;
 
+    //Always reset mosh to this value after moving, it is set in BarProject.cpp
+    int initialMosh = 70;
+
+    //Need more strength when rotating
+    int rotationMosh = 80;
+
     void move(double distanceCm, Direction direction);
     void rotate(double degrees, bool clockwise);
 private:

@@ -7,7 +7,7 @@ public:
     EncoderReader(int interruptPinA, int interruptPinB, double resolution, double radius);
     void enable();
     void disable();
-    void tick();
+    bool tick();
     double getDistance();
 
     volatile unsigned long ticks;

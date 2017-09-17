@@ -21,14 +21,14 @@ private:
     DcMotor* leftMotor = nullptr;
     DcMotor* rightMotor = nullptr;
 
-    double kp = 9;
-    double ki = 0;
-    double kd = 0;
+    double kp = 6;
+    double ki = 4;
+    double kd = 0.1;
 
     bool enabled = false;
 
-    double minPwm = 70;
-    double maxPwm = 130;
+    double minPwm = 60;
+    double maxPwm = 100;
 
     double input = 0;
     double output = 0;
