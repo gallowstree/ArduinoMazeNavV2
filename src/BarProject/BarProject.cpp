@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "DcMotor.h"
 #include "SelfTests.h"
-#include "MasterSlaveSpeedControl.h"
 #include "SpeedControl.h"
 #include "DistanceSensor.h"
 #include "Navigator.h"
