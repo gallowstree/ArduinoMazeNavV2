@@ -26,6 +26,12 @@ public:
     //Need more strength when rotating
     int rotationMosh = 80;
 
+    int const changeDir[4][4] = { {0,90,180,-90}, //FACING LEFT
+                                  {-90,0,90,180}, //FACING UP
+                                  {180,-90,0,90}, //FACING RIGHT 
+                                  {90,180,-90,0}  //FACING DOWN
+                                };
+    
     void move(double distanceCm, Direction direction);
     void rotate(double degrees, bool clockwise);
 private:

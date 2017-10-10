@@ -14,7 +14,7 @@ myPID(&input, &output, &setpoint, kp, ki, kd, DIRECT)
 }
 
 void SpeedControl::enable() {
-    Serial.println("enabling speedctl");
+    //Serial.println("enabling speedctl");
     enabled = true;
     myPID.SetMode(AUTOMATIC);
     myPID.SetTunings(kp, ki, kd);    

@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "Maze.h"
 #include "DcMotor.h"
 #include "SelfTests.h"
 #include "SpeedControl.h"
@@ -6,15 +7,16 @@
 #include "Navigator.h"
 #include "WallDetector.h"
 #include "MazeProperties.h"
-#include "Maze.h"
 #include "Search.h"
 
 int encoderResolution = 230;
 double wheelRadius = 2.1; //cm
 int initialPwm = 65;
-Maze* maze = new Maze(5,5);
+Maze* maze = new Maze(3,2);
 bool searchRoute = true;
 Queue<int> route;
+
+int currDir = 3;
 
 EncoderReader leftEncoder(21, 20, encoderResolution, wheelRadius);
 EncoderReader rightEncoder(18, 19, encoderResolution, wheelRadius);
@@ -58,13 +60,13 @@ void setup() {
 	rightEncoder.isr = &rightIsr;
 	navigator.initialMosh = initialPwm;
 
-	maze->startTile = maze->getTileAt(0,0);
-	maze->goalTile = maze->getTileAt(3,3);
+	maze->startTile = maze->getTileAt(0,1);
+	maze->goalTile = maze->getTileAt(2,0);
 
-	/*maze->getTileAt(0,0)->hasWallAt[DIRECTION_DOWN] = true;
-	maze->getTileAt(1,0)->hasWallAt[DIRECTION_UP] = true;
-	maze->getTileAt(1,1)->hasWallAt[DIRECTION_DOWN] = true;
-	maze->getTileAt(2,1)->hasWallAt[DIRECTION_UP] = true;*/
+	maze->getTileAt(0,1)->hasWallAt[DIRECTION_DOWN] = true;
+	maze->getTileAt(1,1)->hasWallAt[DIRECTION_UP] = true;
+	maze->getTileAt(1,0)->hasWallAt[DIRECTION_DOWN] = true;
+	maze->getTileAt(2,0)->hasWallAt[DIRECTION_UP] = true;
 	//testConstants();	
 }
 
@@ -74,15 +76,27 @@ void clearRoute() {
 }
 
 void loop() {	
+	//motorsSimpleTest(leftMotor,rightMotor);
 	//testContinuousWallDetection(&wallDetector, &navigator, &props);
-	
 	if (searchRoute)
 	{
 		Search::bfs(maze,&route);
-		route.print();
-		maze->resetVisitedTiles();
-		clearRoute();
-		Serial.println("shitafoca");
+		int nextDir = 0;
+		while(!route.isEmpty())
+		{
+			nextDir = route.dequeue();
+			if (currDir != nextDir)
+				navigator.rotate(abs(navigator.changeDir[currDir][nextDir]), navigator.changeDir[currDir][nextDir] > 0 );
+			
+			currDir = nextDir;
+			navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
+		}
+		//
+		//route.print();
+		//maze->resetVisitedTiles();
+		//clearRoute();
+		//Serial.print(navigator.changeDir[DIRECTION_DOWN][DIRECTION_UP]);
+		Serial.println("DONE!");
 		searchRoute = false;
 	}
 }
