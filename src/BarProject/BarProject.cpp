@@ -4,6 +4,7 @@
 #include "SelfTests.h"
 #include "SpeedControl.h"
 #include "DistanceSensor.h"
+#include "IRSensor.h"
 #include "Navigator.h"
 #include "WallDetector.h"
 #include "MazeProperties.h"
@@ -27,8 +28,15 @@ DcMotor rightMotor(A2, A3, 3, initialPwm, 4.39, 461.86, 0.01);
 SpeedControl speedControl(&leftEncoder, &rightEncoder, &leftMotor, &rightMotor);
 Navigator navigator(&leftEncoder, &rightEncoder, &leftMotor, &rightMotor, &speedControl);
 
-DistanceSensor frontSensor(50, 52);
-WallDetector wallDetector(&frontSensor);
+IRSensor leftSensor(50);
+IRSensor rightSensor(51);
+IRSensor frontSensor(53);
+
+//DistanceSensor frontSensor(50, 52);
+WallDetector frontWallDetector(&frontSensor);
+WallDetector rightWallDetector(&rightSensor);
+WallDetector leftWallDetector(&leftSensor);
+
 MazeProperties props;
 
 long time = 0;
@@ -76,9 +84,10 @@ void clearRoute() {
 }
 
 void loop() {	
+	testIRSensors(&frontSensor, &rightSensor, &leftSensor);
 	//motorsSimpleTest(leftMotor,rightMotor);
-	//testContinuousWallDetection(&wallDetector, &navigator, &props);
-	if (searchRoute)
+	//testContinuousWallDetection(&frontWallDetector, &rightWallDetector, &leftWallDetector, &navigator, &props);
+	/*if (searchRoute)
 	{
 		Search::bfs(maze,&route);
 		int nextDir = 0;
@@ -98,5 +107,5 @@ void loop() {
 		//Serial.print(navigator.changeDir[DIRECTION_DOWN][DIRECTION_UP]);
 		Serial.println("DONE!");
 		searchRoute = false;
-	}
+	}*/
 }

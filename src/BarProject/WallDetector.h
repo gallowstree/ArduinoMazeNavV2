@@ -1,16 +1,16 @@
 #ifndef MAZENAV_WALL_DETECTOR_H
 #define MAZENAV_WALL_DETECTOR_H
-#include "DistanceSensor.h"
+#include "IRSensor.h"
 
 //This could become an interface Correction
 class WallDetector {
 
 public:
-    WallDetector(DistanceSensor* sensor);
+    WallDetector(IRSensor* sensor);
     bool isFacingWall();
 
 private:
-    DistanceSensor* sensor;
+    IRSensor* sensor;
 };
 
 

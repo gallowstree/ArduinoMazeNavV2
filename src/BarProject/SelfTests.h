@@ -6,6 +6,7 @@
 #include "Navigator.h"
 #include "MazeProperties.h"
 #include "WallDetector.h"
+#include "IRSensor.h"
 #include <Arduino.h>
 
 void motorsSimpleTest(DcMotor& l, DcMotor& r) {
@@ -66,19 +67,32 @@ facing in  a direction where there is no wall. It will always check the
 right first, if there is a wall, then try left. If there is also a wall,
 face back to  where  we  came from.  If this function  is run in a loop,
 it should give the robot continuous motion through a bounded path. */
-void testContinuousWallDetection(WallDetector* detector, Navigator* navigator, MazeProperties* props) {  
+void testContinuousWallDetection(WallDetector* frontDetector,WallDetector* rightDetector,WallDetector* leftDetector, Navigator* navigator, MazeProperties* props) {  
     const int delayMs = 500;  
-    while (!detector->isFacingWall()) {        
+    while (!frontDetector->isFacingWall()) {        
         navigator->move(props->tileSize - props->tileBorder, Direction::FORWARD);
         delay(delayMs);        
     }    
     
-    int rotationCount = 0;
-    while (detector->isFacingWall()) {
-        navigator->rotate(90 * ( (rotationCount % 2) + 1 ) , rotationCount < 2);  
-        rotationCount++;
-        delay(delayMs);      
+    if(leftDetector->isFacingWall() || rightDetector->isFacingWall())
+    {
+        navigator->rotate(90, leftDetector->isFacingWall());  
     }
+    else
+    {
+        navigator->rotate(180, true);  
+    }
+}
+
+void testIRSensors(IRSensor * frontSensor, IRSensor * rightSensor, IRSensor * leftSensor)
+{
+    Serial.print("Front: ");
+    Serial.print(frontSensor->ObstacleDetected());
+    Serial.print(", Right: ");
+    Serial.print(rightSensor->ObstacleDetected());
+    Serial.print(", Left: ");
+    Serial.println(leftSensor->ObstacleDetected());
+    delay(500);
 }
 
 // void testTimePerTick() {
