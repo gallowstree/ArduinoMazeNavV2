@@ -9,6 +9,7 @@ public:
     void disable();
     bool tick();
     double getDistance();
+    double getDeltaDistance();
 
     volatile unsigned long ticks;
     volatile unsigned long oldTicks;

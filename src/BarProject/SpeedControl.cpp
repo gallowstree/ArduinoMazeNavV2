@@ -6,70 +6,60 @@ SpeedControl::SpeedControl(EncoderReader* leftEncoder, EncoderReader* rightEncod
 leftEncoder(leftEncoder),
 rightEncoder(rightEncoder),
 leftMotor(leftMotor),
-rightMotor(rightMotor),
-myPID(&input, &output, &setpoint, kp, ki, kd, DIRECT)
- {
-    myPID.SetSampleTime(55);
-    myPID.SetOutputLimits(-15, 15);
+rightMotor(rightMotor)
+{
 }
 
 void SpeedControl::enable() {
     //Serial.println("enabling speedctl");
     enabled = true;
-    myPID.SetMode(AUTOMATIC);
-    myPID.SetTunings(kp, ki, kd);    
+    posX = 0;
+    posY = 0;
+    theta = 0;
 }
 
 void SpeedControl::disable() {
-    Serial.println("disabling speedctl");
-    myPID.SetMode(MANUAL);
+    //Serial.println("disabling speedctl");
     enabled = false;
 }
 
 void SpeedControl::updatePID() {
-    bool notReady = leftEncoder->angularSpeed * rightEncoder->angularSpeed == 0 &&
-        leftEncoder->angularSpeed + rightEncoder->angularSpeed != 0;
+    if(time == 0) {
+        time = millis();
+    }
 
-    if (!enabled || notReady ) 
-        return;
+    int diffTime = millis() - time;
+    if(diffTime > 50)
+    {
+        double dr = rightEncoder->getDeltaDistance();
+        double dl = leftEncoder->getDeltaDistance();
+        double dc = (dr+dl)/2;
+        if(dc != 0)
+        {
+            double deltaX = dc * cos(theta);
+            double deltaY = dc * sin(theta);
+            
+            posX += deltaX;
+            posY += deltaY;
 
-    double asl = leftEncoder->angularSpeed;
-    double asr = rightEncoder->angularSpeed;
-    //auto diff = leftEncoder->angularSpeed - rightEncoder->angularSpeed;
-    auto diff = asl - asr;
-    input = diff;
+            double deltaTheta = (dr - dl)/wheelsDistance;
+
+            theta += deltaTheta;
+
+            error = refTheta - theta;
+            Serial.print("x: ");
+            Serial.print(posX);
+            Serial.print(" ,y: ");
+            Serial.print(posY);
+            Serial.print(" ,theta: ");
+            Serial.print(theta);
+            Serial.print(" ,error: ");
+            Serial.println(error);
     
-    if (!myPID.Compute()) 
-        return;    
+        }
 
-    output = abs(output);
-
-    auto newLeft  =  leftMotor->getPulseLength()  + ( diff > 0 ? -(output) : output );
-    auto newRight =  rightMotor->getPulseLength() + ( diff > 0 ? output : -(output) );
-
-    if (newLeft > maxPwm) newLeft = maxPwm;
-    else if (newLeft < minPwm) newLeft = minPwm;
-
-    if (newRight > maxPwm) newRight = maxPwm;
-    else if (newRight < minPwm) newRight = minPwm;
-    
-    leftMotor->setPulseLength((int) ceil(newLeft));
-    rightMotor->setPulseLength((int) ceil(newRight));
-
-    
-    // Serial.print(" diff: ");
-    // Serial.print(diff);
-    // Serial.print(" output: ");
-    // Serial.print(output);
-    // Serial.print(" lv: ");
-    // Serial.print(asl);
-    // Serial.print(" rv: ");
-    // Serial.print(asr);
-    // Serial.print(" nl: ");
-    // Serial.print(newLeft);
-    // Serial.print(" nr: ");
-    // Serial.println(newRight);
-
-    
+        time = millis();
+    }
 }
+
 

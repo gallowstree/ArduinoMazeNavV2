@@ -13,7 +13,7 @@ public:
     void disable();
     void updatePID();
 private:
-    PID myPID;
+    volatile unsigned long time;
 
     EncoderReader* leftEncoder = nullptr;
     EncoderReader* rightEncoder = nullptr;
@@ -21,18 +21,26 @@ private:
     DcMotor* leftMotor = nullptr;
     DcMotor* rightMotor = nullptr;
 
-    double kp = 6;
-    double ki = 4;
-    double kd = 0.1;
+    double kp = 0;
+    double ki = 0;
+    double kd = 0;
 
     bool enabled = false;
 
     double minPwm = 60;
-    double maxPwm = 100;
+    double maxPwm = 130;
 
     double input = 0;
     double output = 0;
     double setpoint = 0;    
+
+    double posX = 0;
+    double posY = 0;
+    double theta = 0;
+
+    double error = 0;
+    double refTheta = 0;
+    double wheelsDistance = 0.088;
 };
 
 #endif

@@ -34,8 +34,8 @@ public:
     
     void move(double distanceCm, Direction direction);
     void rotate(double degrees, bool clockwise);
-private:
     void enableEncoders();
+private:
     void startMotors(Direction direction);
     void stop();
     void waitForDistance(double distanceCm);

@@ -11,8 +11,8 @@
 #include "Search.h"
 
 int encoderResolution = 230;
-double wheelRadius = 2.1; //cm
-int initialPwm = 65;
+double wheelRadius = 0.021; //m
+int initialPwm = 70;
 Maze* maze = new Maze(3,2);
 bool searchRoute = true;
 Queue<int> route;
@@ -71,6 +71,9 @@ void setup() {
 	maze->startTile = maze->getTileAt(0,1);
 	maze->goalTile = maze->getTileAt(2,0);
 
+	navigator.enableEncoders();
+	speedControl.enable();
+
 	maze->getTileAt(0,1)->hasWallAt[DIRECTION_DOWN] = true;
 	maze->getTileAt(1,1)->hasWallAt[DIRECTION_UP] = true;
 	maze->getTileAt(1,0)->hasWallAt[DIRECTION_DOWN] = true;
@@ -84,7 +87,9 @@ void clearRoute() {
 }
 
 void loop() {	
-	testIRSensors(&frontSensor, &rightSensor, &leftSensor);
+	//testIRSensors(&frontSensor, &rightSensor, &leftSensor);
+	//navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
+	speedControl.updatePID();
 	//motorsSimpleTest(leftMotor,rightMotor);
 	//testContinuousWallDetection(&frontWallDetector, &rightWallDetector, &leftWallDetector, &navigator, &props);
 	/*if (searchRoute)
