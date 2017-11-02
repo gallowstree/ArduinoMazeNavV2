@@ -12,6 +12,12 @@ public:
     void enable();
     void disable();
     void updatePID();
+    double posX = 0;
+    double posY = 0;
+    double theta = 0;
+    double kp = 26.0;
+    double ki = 3;
+    double kd =2.5;
 private:
     volatile unsigned long time;
 
@@ -21,24 +27,23 @@ private:
     DcMotor* leftMotor = nullptr;
     DcMotor* rightMotor = nullptr;
 
-    double kp = 0;
-    double ki = 0;
-    double kd = 0;
+    
+
 
     bool enabled = false;
 
-    double minPwm = 60;
-    double maxPwm = 130;
+    double minPwm = 50;
+    double maxPwm = 150;
 
     double input = 0;
     double output = 0;
     double setpoint = 0;    
 
-    double posX = 0;
-    double posY = 0;
-    double theta = 0;
 
     double error = 0;
+    double sumError = 0;
+    double deltaError = 0;
+    double lastError = 0;
     double refTheta = 0;
     double wheelsDistance = 0.088;
 };

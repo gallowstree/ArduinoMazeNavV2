@@ -12,7 +12,7 @@
 
 int encoderResolution = 230;
 double wheelRadius = 0.021; //m
-int initialPwm = 70;
+int initialPwm = 75;
 Maze* maze = new Maze(3,2);
 bool searchRoute = true;
 Queue<int> route;
@@ -88,8 +88,11 @@ void clearRoute() {
 
 void loop() {	
 	//testIRSensors(&frontSensor, &rightSensor, &leftSensor);
-	//navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
-	speedControl.updatePID();
+	//Serial.print("ki: ");
+	//speedControl.ki++;
+	//Serial.println(speedControl.ki);
+	navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
+	delay(1000);
 	//motorsSimpleTest(leftMotor,rightMotor);
 	//testContinuousWallDetection(&frontWallDetector, &rightWallDetector, &leftWallDetector, &navigator, &props);
 	/*if (searchRoute)

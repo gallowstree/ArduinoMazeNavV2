@@ -16,6 +16,10 @@ void SpeedControl::enable() {
     posX = 0;
     posY = 0;
     theta = 0;
+    error = 0;
+    sumError =0;
+    deltaError = 0;
+    lastError = 0;
 }
 
 void SpeedControl::disable() {
@@ -28,8 +32,8 @@ void SpeedControl::updatePID() {
         time = millis();
     }
 
-    int diffTime = millis() - time;
-    if(diffTime > 50)
+    int deltaTime = millis() - time;
+    if(deltaTime > 20)
     {
         double dr = rightEncoder->getDeltaDistance();
         double dl = leftEncoder->getDeltaDistance();
@@ -47,12 +51,44 @@ void SpeedControl::updatePID() {
             theta += deltaTheta;
 
             error = refTheta - theta;
+            sumError += error;
+
+            deltaError = error - lastError;
+            double output = kp*error + ki*(sumError*((deltaTime/1000.0))) + kd*(deltaError/(deltaTime/1000.0));
+            lastError = error;
+
+            double newLeft = 0;
+            double newRight = 0;
+            if (output < 0)
+            {
+                newLeft  =  leftMotor->getPulseLength()  + abs(output);	
+                newRight =  rightMotor->getPulseLength() - abs(output);		
+            }
+            else
+            {
+                newLeft  =  leftMotor->getPulseLength()  - abs(output);	
+                newRight =  rightMotor->getPulseLength() + abs(output);
+            }
+
+            if (newLeft > maxPwm) newLeft = maxPwm;	
+            else if (newLeft < minPwm) newLeft = minPwm;
+
+            if (newRight > maxPwm) newRight = maxPwm;	
+            else if (newRight < minPwm) newRight = minPwm;	
+          
+            leftMotor->setPulseLength((int) ceil(newLeft));
+            rightMotor->setPulseLength((int) ceil(newRight));
+
             Serial.print("x: ");
             Serial.print(posX);
             Serial.print(" ,y: ");
             Serial.print(posY);
-            Serial.print(" ,theta: ");
-            Serial.print(theta);
+            Serial.print(" , output: ");
+            Serial.print(output);
+            Serial.print(" , newLeft: ");
+            Serial.print(newLeft);
+            Serial.print(" , newRight: ");
+            Serial.print(newRight);
             Serial.print(" ,error: ");
             Serial.println(error);
     

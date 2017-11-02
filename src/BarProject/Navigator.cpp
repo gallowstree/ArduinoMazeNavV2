@@ -62,13 +62,12 @@ void Navigator::stop() {
     speedControl->disable();
 }
 
-void Navigator::waitForDistance(double distanceCm) {
-    int targetTicks = (int) floor(distanceCm / (TWO_PI * leftEncoder->radius) * leftEncoder->resolution);    
-
-    while (leftEncoder->ticks < targetTicks || rightEncoder->ticks < targetTicks) {
-
+void Navigator::waitForDistance(double distanceMeters) {
+    int targetTicks = (int) floor(distanceMeters / (TWO_PI * leftEncoder->radius) * leftEncoder->resolution);    
+    double goalPosX = 0.21;
+    while (speedControl->posX < goalPosX) {
         speedControl->updatePID();
-        if (leftEncoder->ticks >= targetTicks) {
+        /*if (leftEncoder->ticks >= targetTicks) {
             leftMotor->stop();
             leftEncoder->disable();
             speedControl->disable();
@@ -78,7 +77,6 @@ void Navigator::waitForDistance(double distanceCm) {
             rightMotor->stop();
             rightEncoder->disable();
             speedControl->disable();
-        }  
+        } */ 
     }
-    
 }
