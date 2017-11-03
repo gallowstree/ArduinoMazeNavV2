@@ -12,7 +12,7 @@
 
 int encoderResolution = 230;
 double wheelRadius = 0.021; //m
-int initialPwm = 75;
+int initialPwm = 70;
 Maze* maze = new Maze(3,2);
 bool searchRoute = true;
 Queue<int> route;
@@ -49,16 +49,6 @@ static void rightIsr() {
 	rightEncoder.tick();	
 }
 
-void testConstants() {
-	leftEncoder.enable();
-	rightEncoder.enable();
-
-	leftMotor.move(Direction::FORWARD);
-	rightMotor.move(Direction::FORWARD);
-
-	speedControl.enable();
-}
-
 void setup() {	
 	Serial.begin(9600);
 	Serial.println("Radio Live Transmission...");
@@ -72,7 +62,7 @@ void setup() {
 	maze->goalTile = maze->getTileAt(2,0);
 
 	navigator.enableEncoders();
-	speedControl.enable();
+	speedControl.enable(0);
 
 	maze->getTileAt(0,1)->hasWallAt[DIRECTION_DOWN] = true;
 	maze->getTileAt(1,1)->hasWallAt[DIRECTION_UP] = true;
@@ -91,7 +81,7 @@ void loop() {
 	//Serial.print("ki: ");
 	//speedControl.ki++;
 	//Serial.println(speedControl.ki);
-	navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
+	navigator.rotate(-90,false);
 	delay(1000);
 	//motorsSimpleTest(leftMotor,rightMotor);
 	//testContinuousWallDetection(&frontWallDetector, &rightWallDetector, &leftWallDetector, &navigator, &props);

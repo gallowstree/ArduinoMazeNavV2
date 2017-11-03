@@ -10,15 +10,15 @@ rightMotor(rightMotor)
 {
 }
 
-void SpeedControl::enable() {
+void SpeedControl::enable(double currentTheta) {
     //Serial.println("enabling speedctl");
     enabled = true;
     posX = 0;
     posY = 0;
-    theta = 0;
+    theta = currentTheta;
     error = 0;
-    sumError =0;
-    deltaError = 0;
+    integral = 0;
+    differential = 0;
     lastError = 0;
 }
 
@@ -31,7 +31,7 @@ void SpeedControl::updatePID() {
     if(time == 0) {
         time = millis();
     }
-
+    bool adjustPWM = false;
     int deltaTime = millis() - time;
     if(deltaTime > 20)
     {
@@ -50,48 +50,53 @@ void SpeedControl::updatePID() {
 
             theta += deltaTheta;
 
-            error = refTheta - theta;
-            sumError += error;
-
-            deltaError = error - lastError;
-            double output = kp*error + ki*(sumError*((deltaTime/1000.0))) + kd*(deltaError/(deltaTime/1000.0));
-            lastError = error;
-
-            double newLeft = 0;
-            double newRight = 0;
-            if (output < 0)
+            if(adjustPWM)
             {
-                newLeft  =  leftMotor->getPulseLength()  + abs(output);	
-                newRight =  rightMotor->getPulseLength() - abs(output);		
+                error = refTheta - theta;
+
+                integral += error * (deltaTime/1000.0);
+                differential = (error - lastError)/(deltaTime/1000.0);
+                double output = kp*error + ki*integral + kd*differential;
+                lastError = error;
+
+                double newLeft = 0;
+                double newRight = 0;
+                if (output < 0)
+                {
+                    newLeft  =  leftMotor->getPulseLength()  + abs(output);	
+                    newRight =  rightMotor->getPulseLength() - abs(output);		
+                }
+                else
+                {
+                    newLeft  =  leftMotor->getPulseLength()  - abs(output);	
+                    newRight =  rightMotor->getPulseLength() + abs(output);
+                }
+
+                if (newLeft > maxPwm) newLeft = maxPwm;	
+                else if (newLeft < minPwm) newLeft = minPwm;
+
+                if (newRight > maxPwm) newRight = maxPwm;	
+                else if (newRight < minPwm) newRight = minPwm;	
+            
+                leftMotor->setPulseLength((int) ceil(newLeft));
+                rightMotor->setPulseLength((int) ceil(newRight));
+                Serial.print("x: ");
+                Serial.print(posX);
+                Serial.print(" ,y: ");
+                Serial.print(posY);
+                Serial.print(" ,theta: ");
+                Serial.print(theta);
+                Serial.print(" , output: ");
+                Serial.print(output);
+                Serial.print(" , newLeft: ");
+                Serial.print(newLeft);
+                Serial.print(" , newRight: ");
+                Serial.print(newRight);
+                Serial.print(" ,error: ");
+                Serial.println(error);
             }
-            else
-            {
-                newLeft  =  leftMotor->getPulseLength()  - abs(output);	
-                newRight =  rightMotor->getPulseLength() + abs(output);
-            }
-
-            if (newLeft > maxPwm) newLeft = maxPwm;	
-            else if (newLeft < minPwm) newLeft = minPwm;
-
-            if (newRight > maxPwm) newRight = maxPwm;	
-            else if (newRight < minPwm) newRight = minPwm;	
-          
-            leftMotor->setPulseLength((int) ceil(newLeft));
-            rightMotor->setPulseLength((int) ceil(newRight));
-
-            Serial.print("x: ");
-            Serial.print(posX);
-            Serial.print(" ,y: ");
-            Serial.print(posY);
-            Serial.print(" , output: ");
-            Serial.print(output);
-            Serial.print(" , newLeft: ");
-            Serial.print(newLeft);
-            Serial.print(" , newRight: ");
-            Serial.print(newRight);
-            Serial.print(" ,error: ");
-            Serial.println(error);
-    
+            Serial.print(" ,theta: ");
+            Serial.println(theta);
         }
 
         time = millis();

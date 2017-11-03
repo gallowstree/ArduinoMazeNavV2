@@ -11,8 +11,8 @@ public:
     double getDistance();
     double getDeltaDistance();
 
-    volatile unsigned long ticks;
-    volatile unsigned long oldTicks;
+    volatile long ticks;
+    volatile long oldTicks;
     volatile unsigned long time;
     volatile double angularSpeed;
     const double resolution;

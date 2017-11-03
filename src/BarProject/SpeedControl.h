@@ -9,15 +9,15 @@
 class SpeedControl {
 public:
     SpeedControl(EncoderReader* leftEncoder, EncoderReader* rightEncoder, DcMotor* leftMotor, DcMotor* rightMotor);
-    void enable();
+    void enable(double currentTheta);
     void disable();
     void updatePID();
     double posX = 0;
     double posY = 0;
     double theta = 0;
     double kp = 26.0;
-    double ki = 3;
-    double kd =2.5;
+    double ki = 2;
+    double kd = 10;
 private:
     volatile unsigned long time;
 
@@ -41,8 +41,8 @@ private:
 
 
     double error = 0;
-    double sumError = 0;
-    double deltaError = 0;
+    double integral = 0;
+    double differential = 0;
     double lastError = 0;
     double refTheta = 0;
     double wheelsDistance = 0.088;

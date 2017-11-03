@@ -14,7 +14,7 @@ speedControl(speedControl) {
 //Maybe look for negative acceleration to startk braking after passing through the center of the square
 void Navigator::move(double distanceCm, Direction direction) {        
     enableEncoders();
-    speedControl->enable();
+    speedControl->enable(0);
     startMotors(direction);
     waitForDistance(distanceCm);
     stop();
@@ -28,14 +28,16 @@ void Navigator::rotate(double degrees, bool clockwise) {
     double targetDistance = rads * rotationRadius;
     
     enableEncoders();
-    speedControl->enable();
+    speedControl->enable(rads);
 
     leftMotor->setPulseLength(rotationMosh);
     rightMotor->setPulseLength(rotationMosh);
     
     leftMotor->move(clockwise ? Direction::FORWARD : Direction::BACKWARDS);
     rightMotor->move(!clockwise ? Direction::FORWARD : Direction::BACKWARDS);
-    waitForDistance(targetDistance);
+    while (speedControl->theta < -0.10) {
+        speedControl->updatePID();
+    }
     stop();
 }
 

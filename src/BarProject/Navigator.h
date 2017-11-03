@@ -24,7 +24,7 @@ public:
     int initialMosh = 70;
 
     //Need more strength when rotating
-    int rotationMosh = 80;
+    int rotationMosh = 70;
 
     int const changeDir[4][4] = { {0,90,180,-90}, //FACING LEFT
                                   {-90,0,90,180}, //FACING UP
