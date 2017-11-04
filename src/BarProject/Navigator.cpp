@@ -12,15 +12,15 @@ speedControl(speedControl) {
 }
 
 //Maybe look for negative acceleration to startk braking after passing through the center of the square
-void Navigator::move(double distanceCm, Direction direction) {        
+void Navigator::move(double distanceMeters, Direction direction) {        
     enableEncoders();
     speedControl->enable(0);
     startMotors(direction);
-    waitForDistance(distanceCm);
+    waitForDistance(distanceMeters);
     stop();
 }
 
-void Navigator::rotate(double degrees, bool clockwise) {
+void Navigator::rotate(double degrees) {
     if (degrees == 0) 
         return;
 
@@ -33,10 +33,10 @@ void Navigator::rotate(double degrees, bool clockwise) {
     leftMotor->setPulseLength(rotationMosh);
     rightMotor->setPulseLength(rotationMosh);
     
-    leftMotor->move(clockwise ? Direction::FORWARD : Direction::BACKWARDS);
-    rightMotor->move(!clockwise ? Direction::FORWARD : Direction::BACKWARDS);
-    while (speedControl->theta < -0.10) {
-        speedControl->updatePID();
+    leftMotor->move((degrees > 0) ? Direction::FORWARD : Direction::BACKWARDS);
+    rightMotor->move((degrees < 0) ? Direction::FORWARD : Direction::BACKWARDS);
+    while ((degrees < 0) ? speedControl->theta <= 0 : speedControl->theta >= 0 ) {
+        speedControl->updatePID(false);
     }
     stop();
 }
@@ -65,20 +65,7 @@ void Navigator::stop() {
 }
 
 void Navigator::waitForDistance(double distanceMeters) {
-    int targetTicks = (int) floor(distanceMeters / (TWO_PI * leftEncoder->radius) * leftEncoder->resolution);    
-    double goalPosX = 0.21;
-    while (speedControl->posX < goalPosX) {
-        speedControl->updatePID();
-        /*if (leftEncoder->ticks >= targetTicks) {
-            leftMotor->stop();
-            leftEncoder->disable();
-            speedControl->disable();
-        }  
-
-        if (rightEncoder->ticks >= targetTicks) {
-            rightMotor->stop();
-            rightEncoder->disable();
-            speedControl->disable();
-        } */ 
+    while (speedControl->posX <= distanceMeters) {
+        speedControl->updatePID(true);
     }
 }

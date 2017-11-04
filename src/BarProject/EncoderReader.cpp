@@ -1,11 +1,12 @@
 #include "EncoderReader.h"
 #include <Arduino.h>
 
-EncoderReader::EncoderReader(int interruptPinA, int interruptPinB, double resolution, double radius) :
+EncoderReader::EncoderReader(int interruptPinA, int interruptPinB, double resolution, double radius, int16_t pinMask) :
 interruptPinA(interruptPinA),
 interruptPinB(interruptPinB),
 resolution(resolution),
-radius(radius)
+radius(radius),
+pinMask(pinMask)
 {
 
 }
@@ -15,8 +16,9 @@ void EncoderReader::enable() {
     time = 0;
     oldTicks = 0;
     angularSpeed = 0;
-    attachInterrupt(digitalPinToInterrupt(interruptPinA), isr, RISING);  
-    attachInterrupt(digitalPinToInterrupt(interruptPinB), isr, RISING);  
+    prevState = 0;
+    attachInterrupt(digitalPinToInterrupt(interruptPinA), isr, CHANGE);  
+    attachInterrupt(digitalPinToInterrupt(interruptPinB), isr, CHANGE);  
 }
 
 void EncoderReader::disable() {
@@ -24,15 +26,12 @@ void EncoderReader::disable() {
     detachInterrupt(digitalPinToInterrupt(interruptPinB));
 }
 
-bool EncoderReader::tick() {
-    if (digitalRead(interruptPinA) == HIGH && digitalRead(interruptPinB) == LOW) {
-        ticks--;
-    }
-    else if (digitalRead(interruptPinB) == HIGH && digitalRead(interruptPinA) == LOW) {
-        ticks++;
-    }
-
-    return false;
+void EncoderReader::tick() 
+{
+    prevState = prevState << 2;
+    prevState = prevState | ((PIND & pinMask) >> ( pinMask == 0x0003 ? 0 : 2)); //Left encoder doesn't need right-shift 
+ 
+    ticks += lookup_table[prevState & 0b1111];    
 }
 
 double EncoderReader::getDistance() {
@@ -40,7 +39,7 @@ double EncoderReader::getDistance() {
 }
 
 double EncoderReader::getDeltaDistance() {
-    double deltaDistance = TWO_PI * radius * ((ticks  - oldTicks) / resolution);
+    double deltaDistance = TWO_PI * radius * (ticks - (oldTicks)) / resolution;
     oldTicks = ticks;
     return deltaDistance;
 }

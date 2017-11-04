@@ -76,11 +76,11 @@ void testContinuousWallDetection(WallDetector* frontDetector,WallDetector* right
     
     if(leftDetector->isFacingWall() || rightDetector->isFacingWall())
     {
-        navigator->rotate(90, leftDetector->isFacingWall());  
+        navigator->rotate((leftDetector->isFacingWall()) ? 90 : -90);  
     }
     else
     {
-        navigator->rotate(180, true);  
+        navigator->rotate(180);  
     }
 }
 

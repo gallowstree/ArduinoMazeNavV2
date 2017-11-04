@@ -33,7 +33,7 @@ public:
                                 };
     
     void move(double distanceCm, Direction direction);
-    void rotate(double degrees, bool clockwise);
+    void rotate(double degrees);
     void enableEncoders();
 private:
     void startMotors(Direction direction);

@@ -11,13 +11,13 @@ public:
     SpeedControl(EncoderReader* leftEncoder, EncoderReader* rightEncoder, DcMotor* leftMotor, DcMotor* rightMotor);
     void enable(double currentTheta);
     void disable();
-    void updatePID();
+    void updatePID(bool adjustPWM);
     double posX = 0;
     double posY = 0;
     double theta = 0;
-    double kp = 26.0;
+    double kp = 23.0;
     double ki = 2;
-    double kd = 10;
+    double kd = 5;
 private:
     volatile unsigned long time;
 
@@ -45,7 +45,7 @@ private:
     double differential = 0;
     double lastError = 0;
     double refTheta = 0;
-    double wheelsDistance = 0.088;
+    double wheelsDistance = 0.075;
 };
 
 #endif

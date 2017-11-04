@@ -10,7 +10,7 @@
 #include "MazeProperties.h"
 #include "Search.h"
 
-int encoderResolution = 230;
+int encoderResolution = 904.0;
 double wheelRadius = 0.021; //m
 int initialPwm = 70;
 Maze* maze = new Maze(3,2);
@@ -19,8 +19,8 @@ Queue<int> route;
 
 int currDir = 3;
 
-EncoderReader leftEncoder(21, 20, encoderResolution, wheelRadius);
-EncoderReader rightEncoder(18, 19, encoderResolution, wheelRadius);
+EncoderReader leftEncoder(20, 21, encoderResolution, wheelRadius, 0x0003);
+EncoderReader rightEncoder(18, 19, encoderResolution, wheelRadius, 0x000C);
 
 DcMotor leftMotor(A1, A0, 4, initialPwm, 4.66, 78.43, 0.07);
 DcMotor rightMotor(A2, A3, 3, initialPwm, 4.39, 461.86, 0.01);
@@ -77,12 +77,20 @@ void clearRoute() {
 }
 
 void loop() {	
+	//testInterruptCounters(leftEncoder,rightEncoder);
 	//testIRSensors(&frontSensor, &rightSensor, &leftSensor);
 	//Serial.print("ki: ");
 	//speedControl.ki++;
 	//Serial.println(speedControl.ki);
-	navigator.rotate(-90,false);
-	delay(1000);
+	//speedControl.updatePID(false);
+	navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
+	delay(500);
+	navigator.rotate(180);
+	delay(500);
+	navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
+	delay(500);
+	navigator.rotate(-180);
+	delay(500);
 	//motorsSimpleTest(leftMotor,rightMotor);
 	//testContinuousWallDetection(&frontWallDetector, &rightWallDetector, &leftWallDetector, &navigator, &props);
 	/*if (searchRoute)

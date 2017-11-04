@@ -27,78 +27,77 @@ void SpeedControl::disable() {
     enabled = false;
 }
 
-void SpeedControl::updatePID() {
+void SpeedControl::updatePID(bool adjustPWM) {
     if(time == 0) {
         time = millis();
     }
-    bool adjustPWM = false;
+
     int deltaTime = millis() - time;
+
     if(deltaTime > 20)
     {
+
         double dr = rightEncoder->getDeltaDistance();
         double dl = leftEncoder->getDeltaDistance();
         double dc = (dr+dl)/2;
-        if(dc != 0)
+
+        double deltaX = dc * cos(theta);
+        double deltaY = dc * sin(theta);
+            
+        posX += deltaX;
+        posY += deltaY;
+
+        double deltaTheta = (dr - dl)/wheelsDistance;
+
+        theta += deltaTheta;
+        if(adjustPWM)
         {
-            double deltaX = dc * cos(theta);
-            double deltaY = dc * sin(theta);
-            
-            posX += deltaX;
-            posY += deltaY;
+            error = refTheta - theta;
 
-            double deltaTheta = (dr - dl)/wheelsDistance;
+            integral += error * (deltaTime/1000.0);
+            differential = (error - lastError)/(deltaTime/1000.0);
+            double output = kp*error + ki*integral + kd*differential;
+            lastError = error;
 
-            theta += deltaTheta;
-
-            if(adjustPWM)
+            double newLeft = 0;
+            double newRight = 0;
+            if (output < 0)
             {
-                error = refTheta - theta;
-
-                integral += error * (deltaTime/1000.0);
-                differential = (error - lastError)/(deltaTime/1000.0);
-                double output = kp*error + ki*integral + kd*differential;
-                lastError = error;
-
-                double newLeft = 0;
-                double newRight = 0;
-                if (output < 0)
-                {
-                    newLeft  =  leftMotor->getPulseLength()  + abs(output);	
-                    newRight =  rightMotor->getPulseLength() - abs(output);		
-                }
-                else
-                {
-                    newLeft  =  leftMotor->getPulseLength()  - abs(output);	
-                    newRight =  rightMotor->getPulseLength() + abs(output);
-                }
-
-                if (newLeft > maxPwm) newLeft = maxPwm;	
-                else if (newLeft < minPwm) newLeft = minPwm;
-
-                if (newRight > maxPwm) newRight = maxPwm;	
-                else if (newRight < minPwm) newRight = minPwm;	
-            
-                leftMotor->setPulseLength((int) ceil(newLeft));
-                rightMotor->setPulseLength((int) ceil(newRight));
-                Serial.print("x: ");
-                Serial.print(posX);
-                Serial.print(" ,y: ");
-                Serial.print(posY);
-                Serial.print(" ,theta: ");
-                Serial.print(theta);
-                Serial.print(" , output: ");
-                Serial.print(output);
-                Serial.print(" , newLeft: ");
-                Serial.print(newLeft);
-                Serial.print(" , newRight: ");
-                Serial.print(newRight);
-                Serial.print(" ,error: ");
-                Serial.println(error);
+                newLeft  =  leftMotor->getPulseLength()  + abs(output);	
+                newRight =  rightMotor->getPulseLength() - abs(output);		
             }
-            Serial.print(" ,theta: ");
-            Serial.println(theta);
-        }
+            else
+            {
+                newLeft  =  leftMotor->getPulseLength()  - abs(output);	
+                newRight =  rightMotor->getPulseLength() + abs(output);
+            }
 
+            if (newLeft > maxPwm) newLeft = maxPwm;	
+            else if (newLeft < minPwm) newLeft = minPwm;
+
+            if (newRight > maxPwm) newRight = maxPwm;	
+            else if (newRight < minPwm) newRight = minPwm;	
+        
+            leftMotor->setPulseLength((int) ceil(newLeft));
+            rightMotor->setPulseLength((int) ceil(newRight));
+            /*Serial.print("x: ");
+            Serial.print(posX);
+            Serial.print(" ,y: ");
+            Serial.print(posY);
+            Serial.print(" ,dc: ");
+            Serial.print(dc);
+            Serial.print(" ,theta: ");
+            Serial.print(theta);
+            Serial.print(" , output: ");
+            Serial.print(output);
+            Serial.print(" , newLeft: ");
+            Serial.print(newLeft);
+            Serial.print(" , newRight: ");
+            Serial.print(newRight);
+            Serial.print(" ,error: ");
+            Serial.println(error);*/
+            
+        }
         time = millis();
     }
 }
