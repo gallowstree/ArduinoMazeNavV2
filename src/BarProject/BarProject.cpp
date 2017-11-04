@@ -11,8 +11,8 @@
 
 int encoderResolution = 230;
 double wheelRadius = 2.1; //cm
-int initialPwm = 65;
-Maze* maze = new Maze(3,2);
+int initialPwm = 70;
+Maze* maze = new Maze(5,2);
 bool searchRoute = true;
 Queue<int> route;
 
@@ -60,13 +60,20 @@ void setup() {
 	rightEncoder.isr = &rightIsr;
 	navigator.initialMosh = initialPwm;
 
-	maze->startTile = maze->getTileAt(0,1);
-	maze->goalTile = maze->getTileAt(2,0);
+	maze->startTile = maze->getTileAt(3,1);
+	maze->goalTile = maze->getTileAt(4,1);
 
 	maze->getTileAt(0,1)->hasWallAt[DIRECTION_DOWN] = true;
 	maze->getTileAt(1,1)->hasWallAt[DIRECTION_UP] = true;
+	
 	maze->getTileAt(1,0)->hasWallAt[DIRECTION_DOWN] = true;
 	maze->getTileAt(2,0)->hasWallAt[DIRECTION_UP] = true;
+
+	maze->getTileAt(3,0)->hasWallAt[DIRECTION_RIGHT] = true;
+	maze->getTileAt(3,1)->hasWallAt[DIRECTION_LEFT] = true;
+
+	maze->getTileAt(3,1)->hasWallAt[DIRECTION_DOWN] = true;
+	maze->getTileAt(4,1)->hasWallAt[DIRECTION_UP] = true;
 	//testConstants();	
 }
 
@@ -75,21 +82,29 @@ void clearRoute() {
         route.dequeue();
 }
 
-void loop() {	
-	//motorsSimpleTest(leftMotor,rightMotor);
-	//testContinuousWallDetection(&wallDetector, &navigator, &props);
+void solveMaze()
+{
 	if (searchRoute)
 	{
 		Search::bfs(maze,&route);
 		int nextDir = 0;
-		while(!route.isEmpty())
+		if (route.isEmpty())
 		{
-			nextDir = route.dequeue();
-			if (currDir != nextDir)
-				navigator.rotate(abs(navigator.changeDir[currDir][nextDir]), navigator.changeDir[currDir][nextDir] > 0 );
-			
-			currDir = nextDir;
-			navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
+			navigator.rotate(360, true );	
+		}
+		else
+		{
+			while(!route.isEmpty())
+			{
+				nextDir = route.dequeue();
+				if (currDir != nextDir)
+					navigator.rotate(abs(navigator.changeDir[currDir][nextDir]) - 3, navigator.changeDir[currDir][nextDir] > 0 );
+				
+				currDir = nextDir;
+				navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
+				delay(1000);
+			}
+			navigator.rotate(360, true );	
 		}
 		//
 		//route.print();
@@ -99,4 +114,12 @@ void loop() {
 		Serial.println("DONE!");
 		searchRoute = false;
 	}
+}
+
+void loop() {	
+	//motorsSimpleTest(leftMotor,rightMotor);
+	//testContinuousWallDetection(&wallDetector, &navigator, &props);
+	solveMaze();
+	// 
+	// 
 }

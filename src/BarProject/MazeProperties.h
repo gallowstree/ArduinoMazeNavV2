@@ -4,6 +4,6 @@
 class MazeProperties {
 public:    
     const double tileSize = 23;
-    const double tileBorder = 2;
+    const double tileBorder = 3;
 };
 #endif

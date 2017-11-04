@@ -35,6 +35,6 @@ float DistanceSensor::GetDistanceCm() {
     if ( pulse_width > MAX_DIST ) {
         return -1;
     }
-
+    Serial.println(cm);
     return cm;
 }

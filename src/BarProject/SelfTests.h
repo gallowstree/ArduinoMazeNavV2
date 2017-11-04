@@ -59,6 +59,11 @@ void testInterruptCounters(EncoderReader& l, EncoderReader& r) {
     
 }
 
+// void selfTestDistanceSensor() {
+//     Serial.println(frontSensor.GetDistanceCm());
+// 	// delay(200);
+// }
+
 /* This will move forward one square at a time. It will look for a wall 
 in front of the robot, If there is no wall, it will keep  going forward.
 This will return once we face  a wall and will always  leave  the robot
@@ -67,16 +72,20 @@ right first, if there is a wall, then try left. If there is also a wall,
 face back to  where  we  came from.  If this function  is run in a loop,
 it should give the robot continuous motion through a bounded path. */
 void testContinuousWallDetection(WallDetector* detector, Navigator* navigator, MazeProperties* props) {  
-    const int delayMs = 500;  
+    const int delayMs = 500 * 2;  
     while (!detector->isFacingWall()) {        
+        Serial.println("Will go forward");
         navigator->move(props->tileSize - props->tileBorder, Direction::FORWARD);
+        Serial.println("moved forward");
         delay(delayMs);        
     }    
-    
+    Serial.println("gaver");
     int rotationCount = 0;
     while (detector->isFacingWall()) {
+        Serial.println("Found wall");
         navigator->rotate(90 * ( (rotationCount % 2) + 1 ) , rotationCount < 2);  
         rotationCount++;
+        Serial.println(rotationCount);
         delay(delayMs);      
     }
 }

@@ -21,7 +21,7 @@ void SpeedControl::enable() {
 }
 
 void SpeedControl::disable() {
-    Serial.println("disabling speedctl");
+    //Serial.println("disabling speedctl");
     myPID.SetMode(MANUAL);
     enabled = false;
 }
