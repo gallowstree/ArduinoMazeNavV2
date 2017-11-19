@@ -8,6 +8,10 @@
 #include "WallDetector.h"
 #include "IRSensor.h"
 #include <Arduino.h>
+#include "HashMap.h"
+#include "Tile.h"
+#include <assert.h>
+
 
 void motorsSimpleTest(DcMotor& l, DcMotor& r) {
     int moveDelay = 2000;
@@ -68,20 +72,23 @@ right first, if there is a wall, then try left. If there is also a wall,
 face back to  where  we  came from.  If this function  is run in a loop,
 it should give the robot continuous motion through a bounded path. */
 void testContinuousWallDetection(WallDetector* frontDetector,WallDetector* rightDetector,WallDetector* leftDetector, Navigator* navigator, MazeProperties* props) {  
-    const int delayMs = 500;  
+    const int delayMs = 750;  
     while (!frontDetector->isFacingWall()) {        
         navigator->move(props->tileSize - props->tileBorder, Direction::FORWARD);
         delay(delayMs);        
     }    
     
-    if(leftDetector->isFacingWall() || rightDetector->isFacingWall())
-    {
-        navigator->rotate((leftDetector->isFacingWall()) ? 90 : -90);  
+    if(!rightDetector->isFacingWall()) {
+        navigator->rotate(90);  
     }
-    else
-    {
+    else if (!leftDetector->isFacingWall()) {
+        navigator->rotate(-90);
+    }
+    else {
         navigator->rotate(180);  
     }
+
+    delay(delayMs);    
 }
 
 void testIRSensors(IRSensor * frontSensor, IRSensor * rightSensor, IRSensor * leftSensor)
@@ -125,4 +132,25 @@ void testIRSensors(IRSensor * frontSensor, IRSensor * rightSensor, IRSensor * le
 
 // 	delay(3000);
 // }
+
+
+
+void testHashMap() {
+    HashMap<Tile*> map;
+    Serial.println("hello");
+    
+    Tile* tile = new Tile(0,0);
+    Serial.println("the key is: ");
+    Serial.println(tile->key);
+    Serial.println(tile->key.c_str());
+
+    map.put(tile->key.c_str(), tile);
+
+    Serial.println(map.get("0,0")->key);
+
+    delete tile;
+
+    Serial.println("End test hashmap");
+    
+}
 #endif

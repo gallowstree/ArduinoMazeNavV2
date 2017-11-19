@@ -1,0 +1,45 @@
+
+[N,S,E,W]
+ ^
+
+N SEW [N,S,E,W]
+              si N está en successors -
+			-> si N == facing
+				 goStraight = toMovement(facing)
+			    sino
+				pending.push(toMovement)
+				
+	         
+			
+
+foreach d
+	if current == facing and 
+		goStraight = current
+	else if 
+		pending.push current
+		current++
+
+if (goStraight != null)
+	pending.push goStraight
+	
+
+
+
+
+    -meto 0 o más <—————————————-----
+         saco nextDest o Nothing     |
+             caso nextDest		     |
+                 voy a nextDest	     |
+                 sensores ———————> - |
+             caso Nothing
+                 termino
+
+
+read possible directions [Direction] produce list of successors [Position, DirectionFacing?]
+    if successors is not empty
+                push them into stack_pending in the inverse order you want to remove them
+    
+    x,y->search -> execute
+    next = pop! stack_pending
+    if next.has_direction
+    

@@ -3,12 +3,21 @@
 //
 
 #include "Tile.h"
+#include "Arduino.h" //To use string and generate the key
 
 Tile::Tile()
 {
     route = new Queue<int>();
 }
 
+Tile::Tile(int row, int col) : row(row), col(col) {
+    key = String(row);
+    key.concat(",");
+    key.concat(col);        
+    route = new Queue<int>();
+}
+
 Tile::~Tile() {
+    Serial.println("deleting tile");
     delete route;
 }

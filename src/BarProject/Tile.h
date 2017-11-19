@@ -16,7 +16,9 @@ public:
     bool visited = false;
     Queue<int> *route;
     Tile();
+    Tile(int row, int col);
 
+    String key;
     virtual ~Tile();
 };
 

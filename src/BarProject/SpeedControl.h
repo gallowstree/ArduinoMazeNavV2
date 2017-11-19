@@ -15,7 +15,7 @@ public:
     double posX = 0;
     double posY = 0;
     double theta = 0;
-    double kp = 23.0;
+    double kp = 20.0;
     double ki = 2;
     double kd = 5;
 private:
@@ -33,7 +33,7 @@ private:
     bool enabled = false;
 
     double minPwm = 50;
-    double maxPwm = 150;
+    double maxPwm = 130;
 
     double input = 0;
     double output = 0;
@@ -45,7 +45,7 @@ private:
     double differential = 0;
     double lastError = 0;
     double refTheta = 0;
-    double wheelsDistance = 0.075;
+    double wheelsDistance = 0.078;
 };
 
 #endif

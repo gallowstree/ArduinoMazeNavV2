@@ -9,6 +9,7 @@
 #include "WallDetector.h"
 #include "MazeProperties.h"
 #include "Search.h"
+#include "MappingStrategy.h"
 
 int encoderResolution = 904.0;
 double wheelRadius = 0.021; //m
@@ -37,6 +38,7 @@ WallDetector frontWallDetector(&frontSensor);
 WallDetector rightWallDetector(&rightSensor);
 WallDetector leftWallDetector(&leftSensor);
 
+
 MazeProperties props;
 
 long time = 0;
@@ -58,17 +60,14 @@ void setup() {
 	rightEncoder.isr = &rightIsr;
 	navigator.initialMosh = initialPwm;
 
-	maze->startTile = maze->getTileAt(0,1);
-	maze->goalTile = maze->getTileAt(2,0);
 
 	navigator.enableEncoders();
 	speedControl.enable(0);
-
-	maze->getTileAt(0,1)->hasWallAt[DIRECTION_DOWN] = true;
-	maze->getTileAt(1,1)->hasWallAt[DIRECTION_UP] = true;
-	maze->getTileAt(1,0)->hasWallAt[DIRECTION_DOWN] = true;
-	maze->getTileAt(2,0)->hasWallAt[DIRECTION_UP] = true;
-	//testConstants();	
+	
+	//testConstants();
+	
+	MappingStrategy mapper(&frontWallDetector, &leftWallDetector, &rightWallDetector, &navigator);
+	mapper.init();
 }
 
 void clearRoute() {
@@ -77,41 +76,10 @@ void clearRoute() {
 }
 
 void loop() {	
-	//testInterruptCounters(leftEncoder,rightEncoder);
-	//testIRSensors(&frontSensor, &rightSensor, &leftSensor);
-	//Serial.print("ki: ");
-	//speedControl.ki++;
-	//Serial.println(speedControl.ki);
-	//speedControl.updatePID(false);
-	navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
-	delay(500);
-	navigator.rotate(180);
-	delay(500);
-	navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
-	delay(500);
-	navigator.rotate(-180);
-	delay(500);
-	//motorsSimpleTest(leftMotor,rightMotor);
+
+
 	//testContinuousWallDetection(&frontWallDetector, &rightWallDetector, &leftWallDetector, &navigator, &props);
-	/*if (searchRoute)
-	{
-		Search::bfs(maze,&route);
-		int nextDir = 0;
-		while(!route.isEmpty())
-		{
-			nextDir = route.dequeue();
-			if (currDir != nextDir)
-				navigator.rotate(abs(navigator.changeDir[currDir][nextDir]), navigator.changeDir[currDir][nextDir] > 0 );
-			
-			currDir = nextDir;
-			navigator.move(props.tileSize - props.tileBorder, Direction::FORWARD);
-		}
-		//
-		//route.print();
-		//maze->resetVisitedTiles();
-		//clearRoute();
-		//Serial.print(navigator.changeDir[DIRECTION_DOWN][DIRECTION_UP]);
-		Serial.println("DONE!");
-		searchRoute = false;
-	}*/
+	
+	//motorsSimpleTest(leftMotor, rightMotor);
+	
 }
