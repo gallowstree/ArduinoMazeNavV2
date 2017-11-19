@@ -78,9 +78,9 @@ void Search::bfs(Maze * maze, Queue<int> * route)
     maze->resetVisitedTiles();
 }
 
-void Search::astar(Maze *maze, Queue<int> *route) {
+void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
     PriorityQueue<Tile *> tiles;
-    tiles.enqueue(maze->startTile,euclidean_distance(maze->startTile,maze->goalTile));
+    tiles.enqueue(startTile, euclidean_distance(startTile, goalTile));
     while(!tiles.isEmpty())
     {
         int cost = 0;
@@ -88,7 +88,7 @@ void Search::astar(Maze *maze, Queue<int> *route) {
         if(!currentTile->visited)
         {
             currentTile->visited = true;
-            if (currentTile == maze->goalTile) {
+            if (currentTile == goalTile) {
                 currentTile->route->copyQueue(route);
                 break;
             }
@@ -105,7 +105,7 @@ void Search::astar(Maze *maze, Queue<int> *route) {
                     }
 
                     successors[i]->route->enqueue(i);
-                    int totalCost = currentTile->route->size() + euclidean_distance(successors[i], maze->goalTile);
+                    int totalCost = currentTile->route->size() + euclidean_distance(successors[i], goalTile);
                     tiles.enqueue(successors[i], totalCost);
                 }
             }

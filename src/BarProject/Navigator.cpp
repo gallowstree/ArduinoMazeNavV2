@@ -41,6 +41,21 @@ void Navigator::rotate(double degrees) {
     stop();
 }
 
+void Navigator::executeRoute(Queue<int> *route) {    
+    while(!route->isEmpty()) {
+        nextDir = route->dequeue();
+        if (facing != nextDir)
+            faceDirection(nextDir);
+        
+        currDir = nextDir;
+        move(props.tileSize - props.tileBorder, Direction::FORWARD);
+    }
+}
+
+void Navigator::faceDirection(int direction) {
+    rotate(navigator.changeDir[facing][nextDir]);
+}
+
 void Navigator::enableEncoders() {
     leftEncoder->enable();
     rightEncoder->enable();

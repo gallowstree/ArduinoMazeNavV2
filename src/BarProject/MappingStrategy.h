@@ -7,15 +7,11 @@
 #include "PriorityQueue.h"
 #include "Navigator.h"
 
-#define DIRECTION_W 0
-#define DIRECTION_N 1
-#define DIRECTION_E 2
-#define DIRECTION_S 3
-
 class MappingStrategy {
 public:
     MappingStrategy(WallDetector* frontDetector, WallDetector* leftDetector, WallDetector* rightDetector, Navigator* navigator);
     void init();
+    bool step();
 private:
     //Tiles we know are reachable
     HashMap<Tile*> *maze;
@@ -26,7 +22,7 @@ private:
     //The keys to pending tiles
     PriorityQueue<String*> *pending;
     
-    int facing = DIRECTION_N;
+    Tile* current = nullptr;    
 
     Navigator* navigator;
 
@@ -34,10 +30,12 @@ private:
     WallDetector* left;
     WallDetector* right;
 
+    WallDetector* northDetector[4] = {left, front, right, nullptr};
+    WallDetector* westDetector[4] =  {front, right, nullptr, left};
+    WallDetector* southDetector[4] = {right, nullptr, left, front};
+    WallDetector* eastDetector[4] =  {nullptr, left, front, right};
+    
 
-
-
-    void face(int newDirection);
     void afterDetectingWalls(Tile* tile, bool ignoreRear);
     Tile* findTile(int row, int col);    
 
@@ -52,6 +50,8 @@ private:
     int invertDirection[4] = {DIRECTION_E, DIRECTION_S, DIRECTION_W, DIRECTION_N};
 
     const char* directionName[4] = {"W", "N", "E", "S"};
+
+    
 };
 
 

@@ -4,6 +4,12 @@
 #include "EncoderReader.h"
 #include "DcMotor.h"
 #include "SpeedControl.h"
+#include "MazeProperties.h"
+
+#define DIRECTION_W 0
+#define DIRECTION_N 1
+#define DIRECTION_E 2
+#define DIRECTION_S 3
 
 class Navigator {
 public:
@@ -16,6 +22,8 @@ public:
     DcMotor* rightMotor;
 
     SpeedControl* speedControl;
+
+    int facing = DIRECTION_N;
 
     //cm between wheels
     double rotationRadius = 4;
@@ -32,13 +40,16 @@ public:
                                   {90,180,-90,0}  //FACING DOWN
                                 };
     
+    void faceDirection(int direction);
     void move(double distanceCm, Direction direction);
     void rotate(double degrees);
     void enableEncoders();
+    void executeRoute(Queue<int> *route);
 private:
     void startMotors(Direction direction);
     void stop();
     void waitForDistance(double distanceCm);
+    MazeProperties props;
 };
 
 #endif

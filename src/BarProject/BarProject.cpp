@@ -7,7 +7,6 @@
 #include "IRSensor.h"
 #include "Navigator.h"
 #include "WallDetector.h"
-#include "MazeProperties.h"
 #include "Search.h"
 #include "MappingStrategy.h"
 
@@ -38,8 +37,6 @@ WallDetector frontWallDetector(&frontSensor);
 WallDetector rightWallDetector(&rightSensor);
 WallDetector leftWallDetector(&leftSensor);
 
-
-MazeProperties props;
 
 long time = 0;
 
