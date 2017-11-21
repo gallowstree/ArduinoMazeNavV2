@@ -64,7 +64,7 @@ void setup() {
 	
 	MappingStrategy mapper(&frontWallDetector, &leftWallDetector, &rightWallDetector, &navigator);
 	Tile* t = mapper.init(DIRECTION_N);
-
+	Serial.println("done initializing");
 	for (; t != nullptr; t = mapper.step(t));
 	Serial.println("done modafoca");
 

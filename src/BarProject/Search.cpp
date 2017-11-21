@@ -8,6 +8,8 @@
 #include "PriorityQueue.h"
 #include "HashMap.h"
 
+char * Search::visitedValue;
+
 void Search::dfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 {
     HashMap<char*> * visited = new HashMap<char*>();

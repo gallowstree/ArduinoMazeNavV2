@@ -37,6 +37,7 @@ Tile* MappingStrategy::step(Tile* current) {
 }
 
 void MappingStrategy::detectWallsAt(Tile* tile, bool ignoreRear) {
+    Serial.println(String("Detecting walls for tile") + tile->key);
     for (int d = DIRECTION_W; d <= DIRECTION_S; d++) { 
         if (d == invertDirection[navigator->facing]) {
             if (ignoreRear)
@@ -45,9 +46,9 @@ void MappingStrategy::detectWallsAt(Tile* tile, bool ignoreRear) {
                 navigator->faceDirection(d);
         }
             
-        WallDetector* detector = wallDetectorForDirection[d][navigator->facing];
-       
+        WallDetector* detector = wallDetectorForDirection[d][navigator->facing];        
         tile->hasWallAt[d] = detector->isFacingWall();
+        Serial.print("     has wall at"); Serial.print(directionName[d]); Serial.println(tile->hasWallAt[d]);
     }
 }
 
