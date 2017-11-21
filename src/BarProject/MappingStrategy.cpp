@@ -5,7 +5,7 @@
 MappingStrategy::MappingStrategy(WallDetector* frontDetector, WallDetector* leftDetector, WallDetector* rightDetector, Navigator* navigator)
 : front(frontDetector),right(rightDetector),left(leftDetector), navigator(navigator) {
     maze = new HashMap<Tile*>();
-    visited = new HashMap<int*>();
+    visited = new HashMap<char*>();
     pending = new PriorityQueue<String*>();     
 }
 
@@ -45,7 +45,9 @@ bool MappingStrategy::step() {
 void MappingStrategy::afterDetectingWalls(Tile* tile, bool ignoreRear) {
     //Mark the tile as visited
     Serial.print("marking as visited "); Serial.println(tile->key.c_str());
-    visited->put(tile->key.c_str(), nullptr);
+    char * value;
+    *value = 'v';
+    visited->put(tile->key.c_str(), v);
 
     for (int d = DIRECTION_W; d <= DIRECTION_S; d++) {
         if (d == invertDirection[navigator->facing] && ignoreRear)

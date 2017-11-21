@@ -17,8 +17,7 @@ private:
     HashMap<Tile*> *maze;
 
     //Only the keys matter, if a key exists here, we've visited that tile before (and discovered its succesors)
-    HashMap<int*> *visited;
-
+    HashMap<char*> *visited;
     //The keys to pending tiles
     PriorityQueue<String*> *pending;
     

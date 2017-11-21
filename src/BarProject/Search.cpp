@@ -6,17 +6,20 @@
 #include "Stack.h"
 #include "Queue.h"
 #include "PriorityQueue.h"
+#include "HashMap.h"
 
-void Search::dfs(Maze * maze, Queue<int> * route)
+void Search::dfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 {
+    HashMap<char*> * visited = new HashMap<char*>();
+    char * value; *value = 'v';
     Stack <Tile *> tiles;
-    tiles.push(maze->startTile);
+    tiles.push(startTile);
     while(!tiles.isEmpty())
     {
         Tile * currentTile = tiles.pop();
-        if(!currentTile->visited) {
-            currentTile->visited = true;
-            if (currentTile == maze->goalTile) {
+        if(visited->get(currentTile->key.c_str()) == nullptr) {
+            visited->put(currentTile->key.c_str(), value);
+            if (currentTile == goalTile) {
                 currentTile->route->copyQueue(route);
                 break;
             }
@@ -25,7 +28,7 @@ void Search::dfs(Maze * maze, Queue<int> * route)
             maze->getSuccessors(currentTile->row, currentTile->col, successors);
 
             for (int i = 0; i < 4; i++) {
-                if (successors[i] != nullptr && !successors[i]->visited) {
+                if (successors[i] != nullptr && visited->get(successors[i]->key.c_str()) == nullptr) {
                     delete successors[i]->route;
                     successors[i]->route = new Queue<int>;
                     if (!currentTile->route->isEmpty()) {
@@ -39,20 +42,22 @@ void Search::dfs(Maze * maze, Queue<int> * route)
             delete[] successors;
         }
     }
-    maze->resetVisitedTiles();
+    delete visited;
 }
 
-void Search::bfs(Maze * maze, Queue<int> * route)
+void Search::bfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 {
+    HashMap<char*> * visited = new HashMap<char*>();
+    char * value; *value = 'v';
     Queue <Tile *> tiles;
-    tiles.enqueue(maze->startTile);
+    tiles.enqueue(startTile);
     while(!tiles.isEmpty())
     {
         Tile * currentTile = tiles.dequeue();
-        if(!currentTile->visited)
+        if(visited->get(currentTile->key.c_str()) == nullptr)
         {
-            currentTile->visited = true;
-            if (currentTile == maze->goalTile) {
+            visited->put(currentTile->key.c_str(), value);
+            if (currentTile == goalTile) {
                 currentTile->route->copyQueue(route);
                 break;
             }
@@ -61,7 +66,7 @@ void Search::bfs(Maze * maze, Queue<int> * route)
             maze->getSuccessors(currentTile->row, currentTile->col, successors);
 
             for (int i = 0; i < 4; i++) {
-                if (successors[i] != nullptr && !successors[i]->visited) {
+                if (successors[i] != nullptr && visited->get(successors[i]->key.c_str()) == nullptr) {
                     delete successors[i]->route;
                     successors[i]->route = new Queue<int>;
                     if (!currentTile->route->isEmpty()) {
@@ -75,19 +80,21 @@ void Search::bfs(Maze * maze, Queue<int> * route)
             delete[] successors;
         }
     }
-    maze->resetVisitedTiles();
+    delete visited;
 }
 
 void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
+    HashMap<char*> * visited = new HashMap<int>();
+    char * value; *value = 'v';
     PriorityQueue<Tile *> tiles;
     tiles.enqueue(startTile, euclidean_distance(startTile, goalTile));
     while(!tiles.isEmpty())
     {
         int cost = 0;
         Tile * currentTile = tiles.dequeue(&cost);
-        if(!currentTile->visited)
+        if(visited->get(currentTile->key.c_str()) == nullptr)
         {
-            currentTile->visited = true;
+            visited->put(currentTile->key.c_str(), value);
             if (currentTile == goalTile) {
                 currentTile->route->copyQueue(route);
                 break;
@@ -97,7 +104,7 @@ void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
             maze->getSuccessors(currentTile->row, currentTile->col, successors);
 
             for (int i = 0; i < 4; i++) {
-                if (successors[i] != nullptr && !successors[i]->visited) {
+                if (successors[i] != nullptr && visited->get(successors[i]->key.c_str()) == nullptr) {
                     delete successors[i]->route;
                     successors[i]->route = new Queue<int>;
                     if (!currentTile->route->isEmpty()) {
@@ -112,7 +119,7 @@ void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
             delete[] successors;
         }
     }
-    maze->resetVisitedTiles();
+    delete visited;
 }
 
 int Search::euclidean_distance(Tile *a, Tile *b) {
