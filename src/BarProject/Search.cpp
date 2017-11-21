@@ -25,7 +25,7 @@ void Search::dfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
             }
 
             auto successors = new Tile *[4]();
-            maze->getSuccessors(currentTile->row, currentTile->col, successors);
+            //maze->getSuccessors(currentTile->row, currentTile->col, successors);
 
             for (int i = 0; i < 4; i++) {
                 if (successors[i] != nullptr && visited->get(successors[i]->key.c_str()) == nullptr) {
@@ -63,7 +63,7 @@ void Search::bfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
             }
 
             auto successors = new Tile *[4]();
-            maze->getSuccessors(currentTile->row, currentTile->col, successors);
+            //maze->getSuccessors(currentTile->row, currentTile->col, successors);
 
             for (int i = 0; i < 4; i++) {
                 if (successors[i] != nullptr && visited->get(successors[i]->key.c_str()) == nullptr) {
@@ -84,7 +84,7 @@ void Search::bfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 }
 
 void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
-    HashMap<char*> * visited = new HashMap<inchar*t>();
+    HashMap<char*> * visited = new HashMap<char*>();
     char * value; *value = 'v';
     PriorityQueue<Tile *> tiles;
     tiles.enqueue(startTile, euclidean_distance(startTile, goalTile));
@@ -101,7 +101,7 @@ void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
             }
 
             auto successors = new Tile *[4]();
-            maze->getSuccessors(currentTile->row, currentTile->col, successors);
+           //maze->getSuccessors(currentTile->row, currentTile->col, successors);
 
             for (int i = 0; i < 4; i++) {
                 if (successors[i] != nullptr && visited->get(successors[i]->key.c_str()) == nullptr) {

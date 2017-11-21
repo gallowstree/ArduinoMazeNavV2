@@ -31,13 +31,13 @@ bool MappingStrategy::step() {
         return true;
     
     int ignored = 0;
-    String key = pending->dequeue(&ignored);
-    Serial.print("Next node to visit is: "); Serial.println(key);
-    Tile* goal = maze->get(key.c_str());
+    String* key = pending->dequeue(&ignored);
+    Serial.print("Next node to visit is: "); Serial.println(*key);
+    Tile* goal = maze->get(key->c_str());
 
     Queue<int> route;
     Search::astar(current, goal, &route);
-    navigator->executeRote(&route);
+    navigator->executeRoute(&route);
 
     current = goal;
 }
@@ -66,6 +66,8 @@ void MappingStrategy::afterDetectingWalls(Tile* tile, bool ignoreRear) {
                 maze->put(successor->key.c_str(), successor);
             }
 
+            tile->successors[d] = successor;
+            successor->successors[invertDirection[d]] = tile;
             successor->hasWallAt[invertDirection[d]] = false;
             
             if (visited->get(successor->key.c_str()) == nullptr) {

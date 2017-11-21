@@ -5,9 +5,8 @@
 #ifndef TEST_CLIENT_SEARCH_H
 #define TEST_CLIENT_SEARCH_H
 
-
-#include "Maze.h"
 #include "Queue.h"
+#include "Tile.h"
 
 class Search {
     public:

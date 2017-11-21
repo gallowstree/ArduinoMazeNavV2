@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include "Maze.h"
 #include "DcMotor.h"
 #include "SelfTests.h"
 #include "SpeedControl.h"
@@ -13,7 +12,7 @@
 int encoderResolution = 904.0;
 double wheelRadius = 0.021; //m
 int initialPwm = 70;
-Maze* maze = new Maze(3,2);
+
 bool searchRoute = true;
 Queue<int> route;
 

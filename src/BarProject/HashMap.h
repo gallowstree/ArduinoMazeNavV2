@@ -17,8 +17,7 @@ public:
         delete head;
     }
 
-    V get(const char* key) {
-        auto current = head;
+    V get(const char* key) {        
         if (isEmpty()) return nullptr;
 
         HashNode<V>* node = findNode(key);

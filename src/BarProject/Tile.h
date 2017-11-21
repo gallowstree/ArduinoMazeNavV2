@@ -11,9 +11,9 @@
 class Tile {
 public:
     bool hasWallAt[4] = {false, false, false, false};
+    Tile* successors[4] = {nullptr, nullptr, nullptr, nullptr};
     int row;
     int col;
-    bool visited = false;
     Queue<int> *route;
     Tile();
     Tile(int row, int col);

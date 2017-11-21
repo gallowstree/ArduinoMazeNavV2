@@ -5,6 +5,7 @@
 #include "DcMotor.h"
 #include "SpeedControl.h"
 #include "MazeProperties.h"
+#include "Queue.h"
 
 #define DIRECTION_W 0
 #define DIRECTION_N 1
