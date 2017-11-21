@@ -45,7 +45,7 @@ bool MappingStrategy::step() {
 void MappingStrategy::afterDetectingWalls(Tile* tile, bool ignoreRear) {
     //Mark the tile as visited
     Serial.print("marking as visited "); Serial.println(tile->key.c_str());
-    char * value = "v";
+    char * value; *value = 'v';
     visited->put(tile->key.c_str(), value);
 
     for (int d = DIRECTION_W; d <= DIRECTION_S; d++) {
