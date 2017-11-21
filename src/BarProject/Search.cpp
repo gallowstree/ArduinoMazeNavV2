@@ -24,22 +24,20 @@ void Search::dfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
                 break;
             }
 
-            auto successors = new Tile *[4]();
-            //maze->getSuccessors(currentTile->row, currentTile->col, successors);
 
             for (int i = 0; i < 4; i++) {
-                if (successors[i] != nullptr && visited->get(successors[i]->key.c_str()) == nullptr) {
-                    delete successors[i]->route;
-                    successors[i]->route = new Queue<int>;
+                Tile * currentSuccesor = currentTile->successors[i];
+                if (currentSuccesor != nullptr && visited->get(currentSuccesor->key.c_str()) == nullptr) {
+                    delete currentSuccesor->route;
+                    currentSuccesor->route = new Queue<int>;
                     if (!currentTile->route->isEmpty()) {
-                        currentTile->route->copyQueue(successors[i]->route);
+                        currentTile->route->copyQueue(currentSuccesor->route);
                     }
 
-                    successors[i]->route->enqueue(i);
-                    tiles.push(successors[i]);
+                    currentSuccesor->route->enqueue(i);
+                    tiles.push(currentSuccesor);
                 }
             }
-            delete[] successors;
         }
     }
     delete visited;
@@ -62,22 +60,21 @@ void Search::bfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
                 break;
             }
 
-            auto successors = new Tile *[4]();
-            //maze->getSuccessors(currentTile->row, currentTile->col, successors);
+            
 
             for (int i = 0; i < 4; i++) {
-                if (successors[i] != nullptr && visited->get(successors[i]->key.c_str()) == nullptr) {
-                    delete successors[i]->route;
-                    successors[i]->route = new Queue<int>;
+                Tile * currentSuccesor = currentTile->successors[i];
+                if (currentSuccesor != nullptr && visited->get(currentSuccesor->key.c_str()) == nullptr) {
+                    delete currentSuccesor->route;
+                    currentSuccesor->route = new Queue<int>;
                     if (!currentTile->route->isEmpty()) {
-                        currentTile->route->copyQueue(successors[i]->route);
+                        currentTile->route->copyQueue(currentSuccesor->route);
                     }
 
-                    successors[i]->route->enqueue(i);
-                    tiles.enqueue(successors[i]);
+                    currentSuccesor->route->enqueue(i);
+                    tiles.enqueue(currentSuccesor);
                 }
             }
-            delete[] successors;
         }
     }
     delete visited;
@@ -100,23 +97,20 @@ void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
                 break;
             }
 
-            auto successors = new Tile *[4]();
-           //maze->getSuccessors(currentTile->row, currentTile->col, successors);
-
             for (int i = 0; i < 4; i++) {
-                if (successors[i] != nullptr && visited->get(successors[i]->key.c_str()) == nullptr) {
-                    delete successors[i]->route;
-                    successors[i]->route = new Queue<int>;
+                Tile * currentSuccesor = currentTile->successors[i];
+                if (currentSuccesor != nullptr && visited->get(currentSuccesor->key.c_str()) == nullptr) {
+                    delete currentSuccesor->route;
+                    currentSuccesor->route = new Queue<int>;
                     if (!currentTile->route->isEmpty()) {
-                        currentTile->route->copyQueue(successors[i]->route);
+                        currentTile->route->copyQueue(currentSuccesor->route);
                     }
 
-                    successors[i]->route->enqueue(i);
-                    int totalCost = currentTile->route->size() + euclidean_distance(successors[i], goalTile);
-                    tiles.enqueue(successors[i], totalCost);
+                    currentSuccesor->route->enqueue(i);
+                    int totalCost = currentTile->route->size() + euclidean_distance(currentSuccesor, goalTile);
+                    tiles.enqueue(currentSuccesor, totalCost);
                 }
             }
-            delete[] successors;
         }
     }
     delete visited;
