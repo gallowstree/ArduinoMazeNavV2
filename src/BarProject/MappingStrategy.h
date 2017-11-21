@@ -10,8 +10,8 @@
 class MappingStrategy {
 public:
     MappingStrategy(WallDetector* frontDetector, WallDetector* leftDetector, WallDetector* rightDetector, Navigator* navigator);
-    void init();
-    bool step();
+    Tile* init(int direction);
+    Tile* step(Tile* current);
 private:
     //Tiles we know are reachable
     HashMap<Tile*> *maze;
@@ -19,9 +19,7 @@ private:
     //Only the keys matter, if a key exists here, we've visited that tile before (and discovered its succesors)
     HashMap<char*> *visited;
     //The keys to pending tiles
-    PriorityQueue<String*> *pending;
-    
-    Tile* current = nullptr;    
+    PriorityQueue<String*> *pending;  
 
     Navigator* navigator;
 
@@ -29,12 +27,14 @@ private:
     WallDetector* left;
     WallDetector* right;
 
-    WallDetector* northDetector[4] = {left, front, right, nullptr};
-    WallDetector* westDetector[4] =  {front, right, nullptr, left};
-    WallDetector* southDetector[4] = {right, nullptr, left, front};
-    WallDetector* eastDetector[4] =  {nullptr, left, front, right};
+
+    WallDetector* wallDetectorForDirection[4][4] = {{front, right, nullptr, left},  
+                                                    {left, front, right, nullptr}, 
+                                                    {nullptr, left, front, right}, 
+                                                    {right, nullptr, left, front}}; 
     
 
+    void detectWallsAt(Tile* tile, bool ignoreRear);
     void afterDetectingWalls(Tile* tile, bool ignoreRear);
     Tile* findTile(int row, int col);    
 
@@ -49,6 +49,7 @@ private:
     int invertDirection[4] = {DIRECTION_E, DIRECTION_S, DIRECTION_W, DIRECTION_N};
 
     const char* directionName[4] = {"W", "N", "E", "S"};
+    char* visitedValue = "v";
 
     
 };

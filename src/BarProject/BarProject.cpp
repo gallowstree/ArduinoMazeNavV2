@@ -63,7 +63,11 @@ void setup() {
 	//testConstants();
 	
 	MappingStrategy mapper(&frontWallDetector, &leftWallDetector, &rightWallDetector, &navigator);
-	mapper.init();
+	Tile* t = mapper.init(DIRECTION_N);
+
+	for (; t != nullptr; t = mapper.step(t));
+	Serial.println("done modafoca");
+
 }
 
 void clearRoute() {

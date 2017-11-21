@@ -9,26 +9,17 @@ MappingStrategy::MappingStrategy(WallDetector* frontDetector, WallDetector* left
     pending = new PriorityQueue<String*>();     
 }
 
-void MappingStrategy::init() {
+Tile* MappingStrategy::init(int direction) {
     Tile* startTile = new Tile(0,0);
     maze->put(startTile->key.c_str(), startTile);
-    current = startTile;
-
-    startTile->hasWallAt[DIRECTION_N] = false;//front->isFacingWall();
-    startTile->hasWallAt[DIRECTION_W] = false;//left->isFacingWall();
-    startTile->hasWallAt[DIRECTION_E] = false;//right->isFacingWall();
-        
-    navigator->faceDirection(DIRECTION_W);        
-    startTile->hasWallAt[DIRECTION_S] = true;//left->isFacingWall();
-    
+    navigator->facing = direction;
+    detectWallsAt(startTile, false);
     afterDetectingWalls(startTile, false);
 }
 
-
-
-bool MappingStrategy::step() {
+Tile* MappingStrategy::step(Tile* current) {
     if (pending->isEmpty()) 
-        return true;
+        return nullptr;
     
     int ignored = 0;
     String* key = pending->dequeue(&ignored);
@@ -40,13 +31,31 @@ bool MappingStrategy::step() {
     navigator->executeRoute(&route);
 
     current = goal;
+    detectWallsAt(current, true);
+    afterDetectingWalls(current, true);
+    return current;
+}
+
+void MappingStrategy::detectWallsAt(Tile* tile, bool ignoreRear) {
+    for (int d = DIRECTION_W; d <= DIRECTION_S; d++) { 
+        if (d == invertDirection[navigator->facing]) {
+            if (ignoreRear)
+                continue;
+            else
+                navigator->faceDirection(d);
+        }
+            
+        WallDetector* detector = wallDetectorForDirection[d][navigator->facing];
+       
+        tile->hasWallAt[d] = detector->isFacingWall();
+    }
 }
 
 void MappingStrategy::afterDetectingWalls(Tile* tile, bool ignoreRear) {
     //Mark the tile as visited
     Serial.print("marking as visited "); Serial.println(tile->key.c_str());
-    char * value; *value = 'v';
-    visited->put(tile->key.c_str(), value);
+
+    visited->put(tile->key.c_str(), visitedValue);
 
     for (int d = DIRECTION_W; d <= DIRECTION_S; d++) {
         if (d == invertDirection[navigator->facing] && ignoreRear)
