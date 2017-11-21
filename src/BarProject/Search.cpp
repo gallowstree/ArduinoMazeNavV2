@@ -11,7 +11,7 @@
 void Search::dfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 {
     HashMap<char*> * visited = new HashMap<char*>();
-    char * value; *value = 'v';
+    char * value = "v";
     Stack <Tile *> tiles;
     tiles.push(startTile);
     while(!tiles.isEmpty())
@@ -48,7 +48,7 @@ void Search::dfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 void Search::bfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 {
     HashMap<char*> * visited = new HashMap<char*>();
-    char * value; *value = 'v';
+    char * value = "v";
     Queue <Tile *> tiles;
     tiles.enqueue(startTile);
     while(!tiles.isEmpty())
@@ -85,7 +85,7 @@ void Search::bfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 
 void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
     HashMap<char*> * visited = new HashMap<int>();
-    char * value; *value = 'v';
+    char * value = "v";
     PriorityQueue<Tile *> tiles;
     tiles.enqueue(startTile, euclidean_distance(startTile, goalTile));
     while(!tiles.isEmpty())
