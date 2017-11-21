@@ -15,6 +15,7 @@ class Search {
     static void astar(Tile* startTile, Tile* goalTile, Queue<int> * route);
     private:
     static int euclidean_distance(Tile * a, Tile * b);
+    static char * visitedValue = "v";
 };
 
 
