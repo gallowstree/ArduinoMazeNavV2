@@ -12,10 +12,9 @@ class Tile {
 public:
     bool hasWallAt[4] = {false, false, false, false};
     Tile* successors[4] = {nullptr, nullptr, nullptr, nullptr};
-    int row;
-    int col;
+    int row = 0;
+    int col = 0;
     Queue<int> *route;
-    Tile();
     Tile(int row, int col);
 
     String key;

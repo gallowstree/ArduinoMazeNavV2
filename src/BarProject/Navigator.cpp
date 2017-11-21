@@ -54,6 +54,7 @@ void Navigator::executeRoute(Queue<int> *route) {
 
 void Navigator::faceDirection(int direction) {
     rotate(changeDir[facing][direction]);
+    facing = direction;
 }
 
 void Navigator::enableEncoders() {

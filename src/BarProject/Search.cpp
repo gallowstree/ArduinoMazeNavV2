@@ -88,6 +88,7 @@ void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
     {
         int cost = 0;
         Tile * currentTile = tiles.dequeue(&cost);
+        Serial.println("before if1");
         if(visited->get(currentTile->key.c_str()) == nullptr)
         {
             visited->put(currentTile->key.c_str(), visitedValue);
@@ -95,23 +96,34 @@ void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
                 currentTile->route->copyQueue(route);
                 break;
             }
-
+            Serial.println("before for");
             for (int i = 0; i < 4; i++) {
                 Tile * currentSuccesor = currentTile->successors[i];
                 if (currentSuccesor != nullptr && visited->get(currentSuccesor->key.c_str()) == nullptr) {
-                    delete currentSuccesor->route;
+                    Serial.println("after if2");
+                    Serial.print("col: ");
+                    Serial.println(currentSuccesor->col);
+                    Serial.print("row: ");
+                    Serial.println(currentSuccesor->row);
+                    if(currentSuccesor-> route != nullptr)
+                        delete currentSuccesor->route;
+                    Serial.println("route deleted");
                     currentSuccesor->route = new Queue<int>;
+                    Serial.println("route created");
                     if (!currentTile->route->isEmpty()) {
                         currentTile->route->copyQueue(currentSuccesor->route);
                     }
-
+                    Serial.println("route copied");
                     currentSuccesor->route->enqueue(i);
+                    Serial.println("route enqueued");
                     int totalCost = currentTile->route->size() + euclidean_distance(currentSuccesor, goalTile);
                     tiles.enqueue(currentSuccesor, totalCost);
+                    Serial.println("succesor enqueued");
                 }
             }
         }
     }
+    Serial.println("Finished A*");
     delete visited;
 }
 
