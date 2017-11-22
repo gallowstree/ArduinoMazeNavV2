@@ -13,9 +13,6 @@ int encoderResolution = 904.0;
 double wheelRadius = 0.021; //m
 int initialPwm = 70;
 
-bool searchRoute = true;
-Queue<int> route;
-
 int currDir = 3;
 
 EncoderReader leftEncoder(20, 21, encoderResolution, wheelRadius, 0x0003);
@@ -68,11 +65,6 @@ void setup() {
 	for (; t != nullptr; t = mapper.step(t));
 	Serial.println("done modafoca");
 
-}
-
-void clearRoute() {
-    while (!route.isEmpty())
-        route.dequeue();
 }
 
 void loop() {	

@@ -13,8 +13,9 @@ Tile* MappingStrategy::init(int direction) {
     Tile* startTile = new Tile(0,0);
     maze->put(startTile->key.c_str(), startTile);
     navigator->facing = direction;
-    detectWallsAt(startTile, false);
-    afterDetectingWalls(startTile, false);
+    detectWallsAt(startTile, true);
+    afterDetectingWalls(startTile, true);
+    return startTile;
 }
 
 Tile* MappingStrategy::step(Tile* current) {
@@ -82,10 +83,6 @@ void MappingStrategy::afterDetectingWalls(Tile* tile, bool ignoreRear) {
             }
         
             tile->successors[d] = successor;
-            Serial.print("Col Suc:");
-            Serial.print(tile->successors[d]->col);
-            Serial.print("Row Suc:");
-            Serial.println(tile->successors[d]->row);
             successor->successors[invertDirection[d]] = tile;
             successor->hasWallAt[invertDirection[d]] = false;
             
