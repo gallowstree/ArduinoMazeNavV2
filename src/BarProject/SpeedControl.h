@@ -33,7 +33,7 @@ private:
     bool enabled = false;
 
     double minPwm = 50;
-    double maxPwm = 130;
+    double maxPwm = 110;
 
     double input = 0;
     double output = 0;

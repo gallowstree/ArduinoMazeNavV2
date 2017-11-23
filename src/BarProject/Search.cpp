@@ -81,13 +81,16 @@ void Search::bfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 }
 
 void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
+    startTile->route->print();
+    delete startTile->route;
+    startTile->route = new Queue<int>();
     HashMap<char*> * visited = new HashMap<char*>();
     PriorityQueue<Tile *> tiles;
     tiles.enqueue(startTile, euclidean_distance(startTile, goalTile));
     while(!tiles.isEmpty())
-    {
+    {        
         int cost = 0;
-        Tile * currentTile = tiles.dequeue(&cost);
+        Tile * currentTile = tiles.dequeue(&cost);        
         if(visited->get(currentTile->key.c_str()) == nullptr)
         {
             visited->put(currentTile->key.c_str(), visitedValue);

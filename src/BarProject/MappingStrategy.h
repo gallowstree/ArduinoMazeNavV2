@@ -27,6 +27,7 @@ private:
     WallDetector* left;
     WallDetector* right;
 
+    int currPriority = 1000;
 
     WallDetector* wallDetectorForDirection[4][4] = {{front, right, nullptr, left},  
                                                     {left, front, right, nullptr}, 

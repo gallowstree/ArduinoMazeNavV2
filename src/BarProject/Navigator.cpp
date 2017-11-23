@@ -43,9 +43,13 @@ void Navigator::rotate(double degrees) {
 
 void Navigator::executeRoute(Queue<int> *route) {    
     while(!route->isEmpty()) {
+        delay(1000);
         int nextDir = route->dequeue();
-        if (facing != nextDir)
+        if (facing != nextDir){
             faceDirection(nextDir);
+            delay(500);
+        }
+            
         
         facing = nextDir;
         move(props.tileSize - props.tileBorder, Direction::FORWARD);

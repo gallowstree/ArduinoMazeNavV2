@@ -87,12 +87,14 @@ void MappingStrategy::afterDetectingWalls(Tile* tile, bool ignoreRear) {
             successor->hasWallAt[invertDirection[d]] = false;
             
             if (visited->get(successor->key.c_str()) == nullptr) {
-                int priority = d == navigator->facing ? 0 : 1;
+                int priority = d == navigator->facing ? currPriority - 1 : currPriority;
                 Serial.print("Successor has not been visited, will enqueue it with priority "); Serial.println(priority);
                 pending->enqueue(&successor->key, priority);
             }            
         }
     }
+
+    currPriority--;
 }
 
 Tile* MappingStrategy::findTile(int row, int col) {
