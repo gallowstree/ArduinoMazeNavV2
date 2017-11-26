@@ -51,7 +51,6 @@ void Navigator::executeRoute(Queue<int> *route) {
         }
             
         
-        facing = nextDir;
         move(props.tileSize - props.tileBorder, Direction::FORWARD);
     }
 }

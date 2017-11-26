@@ -9,7 +9,7 @@
 
 class MappingStrategy {
 public:
-    MappingStrategy(WallDetector* frontDetector, WallDetector* leftDetector, WallDetector* rightDetector, Navigator* navigator);
+    MappingStrategy(HashMap<Tile*>* maze, WallDetector* frontDetector, WallDetector* leftDetector, WallDetector* rightDetector, Navigator* navigator);
     Tile* init(int direction);
     Tile* step(Tile* current);
 private:

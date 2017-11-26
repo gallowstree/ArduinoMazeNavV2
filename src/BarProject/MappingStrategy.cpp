@@ -2,9 +2,8 @@
 #include "Arduino.h"
 #include "Search.h"
 
-MappingStrategy::MappingStrategy(WallDetector* frontDetector, WallDetector* leftDetector, WallDetector* rightDetector, Navigator* navigator)
-: front(frontDetector),right(rightDetector),left(leftDetector), navigator(navigator) {
-    maze = new HashMap<Tile*>();
+MappingStrategy::MappingStrategy(HashMap<Tile*> * maze, WallDetector* frontDetector, WallDetector* leftDetector, WallDetector* rightDetector, Navigator* navigator)
+: maze(maze),front(frontDetector),right(rightDetector),left(leftDetector), navigator(navigator) {
     visited = new HashMap<char*>();
     pending = new PriorityQueue<String*>();     
 }

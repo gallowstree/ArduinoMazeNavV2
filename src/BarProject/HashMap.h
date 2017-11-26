@@ -10,6 +10,9 @@ public:
 
     ~HashMap() {
         auto current = head;
+        if(current == nullptr)
+            return;
+            
         while ((current = head->getNext()) != nullptr) {
             delete head;
             head = current;

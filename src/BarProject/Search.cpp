@@ -12,6 +12,8 @@ char * Search::visitedValue;
 
 void Search::dfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 {
+    delete startTile->route;
+    startTile->route = new Queue<int>();
     HashMap<char*> * visited = new HashMap<char*>();
     Stack <Tile *> tiles;
     tiles.push(startTile);
@@ -29,7 +31,8 @@ void Search::dfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
             for (int i = 0; i < 4; i++) {
                 Tile * currentSuccesor = currentTile->successors[i];
                 if (currentSuccesor != nullptr && visited->get(currentSuccesor->key.c_str()) == nullptr) {
-                    delete currentSuccesor->route;
+                    if(currentSuccesor-> route != nullptr)
+                        delete currentSuccesor->route;
                     currentSuccesor->route = new Queue<int>;
                     if (!currentTile->route->isEmpty()) {
                         currentTile->route->copyQueue(currentSuccesor->route);
@@ -46,6 +49,8 @@ void Search::dfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 
 void Search::bfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 {
+    delete startTile->route;
+    startTile->route = new Queue<int>();
     HashMap<char*> * visited = new HashMap<char*>();
     Queue <Tile *> tiles;
     tiles.enqueue(startTile);
@@ -65,7 +70,8 @@ void Search::bfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
             for (int i = 0; i < 4; i++) {
                 Tile * currentSuccesor = currentTile->successors[i];
                 if (currentSuccesor != nullptr && visited->get(currentSuccesor->key.c_str()) == nullptr) {
-                    delete currentSuccesor->route;
+                    if(currentSuccesor-> route != nullptr)
+                        delete currentSuccesor->route;
                     currentSuccesor->route = new Queue<int>;
                     if (!currentTile->route->isEmpty()) {
                         currentTile->route->copyQueue(currentSuccesor->route);
@@ -81,7 +87,6 @@ void Search::bfs(Tile* startTile, Tile* goalTile, Queue<int> * route)
 }
 
 void Search::astar(Tile* startTile, Tile* goalTile, Queue<int> *route) {
-    startTile->route->print();
     delete startTile->route;
     startTile->route = new Queue<int>();
     HashMap<char*> * visited = new HashMap<char*>();
