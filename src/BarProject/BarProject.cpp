@@ -13,6 +13,7 @@
 int encoderResolution = 904.0;
 double wheelRadius = 0.021; //m
 int initialPwm = 70;
+int led = 48;
 
 int currDir = 3;
 
@@ -47,12 +48,22 @@ static void rightIsr() {
 	rightEncoder.tick();	
 }
 
+void blinkLed()
+{
+	for (int i = 0; i < 5; i++)
+	{
+		digitalWrite(led, HIGH);
+		delay(200);
+		digitalWrite(led, LOW);
+		delay(200);
+	}
+}
+
 void setup() {	
 	Serial.begin(9600);
 	Serial.println("Radio Live Transmission...");
-
 	conn.Begin();
-	
+	pinMode(led, OUTPUT);
 	delay(3000);
 	leftEncoder.isr = &leftIsr;
 	rightEncoder.isr = &rightIsr;
@@ -69,7 +80,7 @@ void setup() {
 	Serial.println("done initializing");
 	for (; t != nullptr; t = mapper.step(t));
 	Serial.println("done modafoca");
-
+	blinkLed();
 }
 
 void loop() {	
