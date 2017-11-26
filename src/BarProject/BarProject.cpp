@@ -8,6 +8,7 @@
 #include "WallDetector.h"
 #include "Search.h"
 #include "MappingStrategy.h"
+#include "WifiConnection.h"
 
 int encoderResolution = 904.0;
 double wheelRadius = 0.021; //m
@@ -33,6 +34,8 @@ WallDetector frontWallDetector(&frontSensor);
 WallDetector rightWallDetector(&rightSensor);
 WallDetector leftWallDetector(&leftSensor);
 
+WifiConnection conn;
+
 
 long time = 0;
 
@@ -47,6 +50,8 @@ static void rightIsr() {
 void setup() {	
 	Serial.begin(9600);
 	Serial.println("Radio Live Transmission...");
+
+	conn.Begin();
 	
 	delay(3000);
 	leftEncoder.isr = &leftIsr;

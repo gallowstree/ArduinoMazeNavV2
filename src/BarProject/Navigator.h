@@ -27,13 +27,14 @@ public:
     int facing = DIRECTION_N;
 
     //cm between wheels
-    double rotationRadius = 4;
+    double rotationRadius = 5.2;
 
     //Always reset mosh to this value after moving, it is set in BarProject.cpp
-    int initialMosh = 70;
+    int initialMosh = 35;
 
     //Need more strength when rotating
-    int rotationMosh = 75;
+    int leftRotationMosh = 52;
+    int rightRotationMosh = 44;
 
     int const changeDir[4][4] = { {0,90,180,-90}, //FACING LEFT
                                   {-90,0,90,180}, //FACING UP

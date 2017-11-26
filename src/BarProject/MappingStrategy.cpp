@@ -13,8 +13,8 @@ Tile* MappingStrategy::init(int direction) {
     Tile* startTile = new Tile(0,0);
     maze->put(startTile->key.c_str(), startTile);
     navigator->facing = direction;
-    detectWallsAt(startTile, true);
-    afterDetectingWalls(startTile, true);
+    detectWallsAt(startTile, false);
+    afterDetectingWalls(startTile, false);
     return startTile;
 }
 

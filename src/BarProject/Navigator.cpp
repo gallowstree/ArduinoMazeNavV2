@@ -30,8 +30,8 @@ void Navigator::rotate(double degrees) {
     enableEncoders();
     speedControl->enable(rads);
 
-    leftMotor->setPulseLength(rotationMosh);
-    rightMotor->setPulseLength(rotationMosh);
+    leftMotor->setPulseLength(leftRotationMosh);
+    rightMotor->setPulseLength(rightRotationMosh);
     
     leftMotor->move((degrees > 0) ? Direction::FORWARD : Direction::BACKWARDS);
     rightMotor->move((degrees < 0) ? Direction::FORWARD : Direction::BACKWARDS);

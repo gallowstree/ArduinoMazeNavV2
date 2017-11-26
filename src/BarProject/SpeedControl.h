@@ -4,7 +4,6 @@
 #include "EncoderReader.h"
 #include "DcMotor.h"
 #include "PID_v1.h"
-#include "PID_AutoTune_v0.h"
 
 class SpeedControl {
 public:
@@ -32,8 +31,8 @@ private:
 
     bool enabled = false;
 
-    double minPwm = 50;
-    double maxPwm = 110;
+    double minPwm = 25;
+    double maxPwm = 55;
 
     double input = 0;
     double output = 0;
