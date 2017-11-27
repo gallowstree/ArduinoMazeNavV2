@@ -136,7 +136,17 @@ void loop() {
 	{
 		if(shouldMap)
 		{
-			Serial.println("MODAFOCAAAA");
+			if(maze != nullptr)
+			{
+				//todo: eliminar los tiles cada vez que se crea un nuevo mapa
+				delete maze;
+			}
+			maze = new HashMap<Tile*>();
+			MappingStrategy mapper(maze, &frontWallDetector, &leftWallDetector, &rightWallDetector, &navigator);
+			Tile* t = mapper.init(navigator.facing);
+			for (; t != nullptr; t = mapper.step(t));
+			led.blink(5);
+			shouldMap = false;
 		}
 	}
 	//testContinuousWallDetection(&frontWallDetector, &rightWallDetector, &leftWallDetector, &navigator, &props);
