@@ -33,7 +33,6 @@ void SpeedControl::updatePID(bool adjustPWM) {
     }
 
     int deltaTime = millis() - time;
-
     if(deltaTime > 20)
     {
 
@@ -80,6 +79,8 @@ void SpeedControl::updatePID(bool adjustPWM) {
         
             leftMotor->setPulseLength((int) ceil(newLeft));
             rightMotor->setPulseLength((int) ceil(newRight));
+
+          
             /*Serial.print("x: ");
             Serial.print(posX);
             Serial.print(" ,y: ");

@@ -1,6 +1,9 @@
 #include "MappingStrategy.h"
 #include "Arduino.h"
 #include "Search.h"
+#include "EventLogger.h"
+
+int MappingStrategy::displacement[4][2] ;
 
 MappingStrategy::MappingStrategy(HashMap<Tile*> * maze, WallDetector* frontDetector, WallDetector* leftDetector, WallDetector* rightDetector, Navigator* navigator)
 : maze(maze),front(frontDetector),right(rightDetector),left(leftDetector), navigator(navigator) {
@@ -12,6 +15,7 @@ Tile* MappingStrategy::init(int direction) {
     Tile* startTile = new Tile(0,0);
     maze->put(startTile->key.c_str(), startTile);
     navigator->facing = direction;
+    EventLogger::updateLocation(direction, 0, 0);
     detectWallsAt(startTile, false);
     afterDetectingWalls(startTile, false);
     return startTile;
@@ -30,7 +34,7 @@ Tile* MappingStrategy::step(Tile* current) {
     Search::astar(current, goal, &route);
     Serial.print("Route: ");
     route.print();
-    navigator->executeRoute(&route);
+    navigator->executeRoute(&route, current->row, current->col);
 
     current = goal;
     detectWallsAt(current, true);
@@ -54,6 +58,7 @@ void MappingStrategy::detectWallsAt(Tile* tile, bool ignoreRear) {
             tile->hasWallAt[d] = detector->isFacingWall();
         Serial.print("     has wall at "); Serial.print(directionName[d]); Serial.print(" "); Serial.println(tile->hasWallAt[d]);
     }
+    EventLogger::discoveredTile(tile);
 }
 
 void MappingStrategy::afterDetectingWalls(Tile* tile, bool ignoreRear) {
@@ -68,8 +73,8 @@ void MappingStrategy::afterDetectingWalls(Tile* tile, bool ignoreRear) {
 
         if (!tile->hasWallAt[d]) {
             
-            int successorRow = tile->row + displacement[d][0];
-            int successorCol = tile->col + displacement[d][1];
+            int successorRow = tile->row + MappingStrategy::displacement[d][0];
+            int successorCol = tile->col + MappingStrategy::displacement[d][1];
             Serial.print("can move to "); Serial.println(directionName[d]);
             Serial.print("coords: "); Serial.print(successorRow); Serial.print(" "); Serial.println(successorCol);
             

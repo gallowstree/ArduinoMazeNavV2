@@ -33,8 +33,8 @@ public:
     int initialMosh = 35;
 
     //Need more strength when rotating
-    int leftRotationMosh = 52;
-    int rightRotationMosh = 44;
+    int leftRotationMosh = 44;
+    int rightRotationMosh = 38;
 
     int const changeDir[4][4] = { {0,90,180,-90}, //FACING LEFT
                                   {-90,0,90,180}, //FACING UP
@@ -46,7 +46,7 @@ public:
     void move(double distanceCm, Direction direction);
     void rotate(double degrees);
     void enableEncoders();
-    void executeRoute(Queue<int> *route);
+    void executeRoute(Queue<int> *route, int currRow, int currCol);
 private:
     void startMotors(Direction direction);
     void stop();

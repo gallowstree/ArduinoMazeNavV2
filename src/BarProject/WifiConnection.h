@@ -16,8 +16,8 @@ class WifiConnection {
 
 		WifiConnection();
 		void Begin();
-		const char *ssid = "i like your squanch!";
-		const char *psk = "Guanakatapekus!";	
+		const char *ssid = "Virusparatodos";
+		const char *psk = "Alexis0nf!r3..";	
 	private:
 		
 		

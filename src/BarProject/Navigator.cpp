@@ -1,4 +1,6 @@
 #include "Navigator.h"
+#include "EventLogger.h"
+#include "MappingStrategy.h"
 #include <Arduino.h>
 #include <math.h>
 
@@ -28,6 +30,8 @@ void Navigator::rotate(double degrees) {
     double targetDistance = rads * rotationRadius;
     
     enableEncoders();
+    //Serial.print("Initial angle");
+    //Serial.print(rads);
     speedControl->enable(rads);
 
     leftMotor->setPulseLength(leftRotationMosh);
@@ -37,21 +41,29 @@ void Navigator::rotate(double degrees) {
     rightMotor->move((degrees < 0) ? Direction::FORWARD : Direction::BACKWARDS);
     while ((degrees < 0) ? speedControl->theta <= 0 : speedControl->theta >= 0 ) {
         speedControl->updatePID(false);
+        Serial.println(speedControl->theta);
+        //EventLogger::genericLog(speedControl->theta);
     }
+    //Serial.println("rotation done!");
     stop();
 }
 
-void Navigator::executeRoute(Queue<int> *route) {    
+void Navigator::executeRoute(Queue<int> *route, int currRow, int currCol) {    
     while(!route->isEmpty()) {
         delay(1000);
         int nextDir = route->dequeue();
+
         if (facing != nextDir){
+            //Serial.println("i have to rotate");
             faceDirection(nextDir);
             delay(500);
         }
-            
-        
+        //Serial.println("start moving");
         move(props.tileSize - props.tileBorder, Direction::FORWARD);
+        currRow = currRow + MappingStrategy::displacement[facing][0];
+        currCol = currCol + MappingStrategy::displacement[facing][1];
+        EventLogger::updateLocation(facing, currRow, currCol);
+        //Serial.println("done moving");
     }
 }
 

@@ -12,6 +12,11 @@ public:
     MappingStrategy(HashMap<Tile*>* maze, WallDetector* frontDetector, WallDetector* leftDetector, WallDetector* rightDetector, Navigator* navigator);
     Tile* init(int direction);
     Tile* step(Tile* current);
+    static int displacement[4][2] = {   {-1, 0}, //W
+                                        {0, 1},  //N
+                                        {1, 0},  //E
+                                        {0, -1}  //S
+                                        };
 private:
     //Tiles we know are reachable
     HashMap<Tile*> *maze;
@@ -39,13 +44,6 @@ private:
     void afterDetectingWalls(Tile* tile, bool ignoreRear);
     Tile* findTile(int row, int col);    
 
-
-    int displacement[4][2] = {   {-1, 0}, //W
-                                {0, 1},  //N
-                                {1, 0},  //E
-                                {0, -1}  //S
-                            };
-                            
                             //W N E S
     int invertDirection[4] = {DIRECTION_E, DIRECTION_S, DIRECTION_W, DIRECTION_N};
 

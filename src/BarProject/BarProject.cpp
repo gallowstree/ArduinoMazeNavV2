@@ -10,7 +10,9 @@
 #include "MappingStrategy.h"
 #include "WifiConnection.h"
 #include "TCPServer.h"
+#include "TCPClient.h"
 #include "Led.h"
+#include "EventLogger.h"
 
 int encoderResolution = 904.0;
 double wheelRadius = 0.021; //m
@@ -34,7 +36,6 @@ IRSensor leftSensor(50);
 IRSensor rightSensor(51);
 IRSensor frontSensor(53);
 
-//DistanceSensor frontSensor(50, 52);
 WallDetector frontWallDetector(&frontSensor);
 WallDetector rightWallDetector(&rightSensor);
 WallDetector leftWallDetector(&leftSensor);
@@ -43,8 +44,6 @@ HashMap<Tile*> * maze = new HashMap<Tile*>();
 WifiConnection conn;
 Command command;
 TCPServer server(4420,&command);
-String serverIP = "UNDEFINED";
-int serverPort = 4421;
 
 long time = 0;
 
@@ -66,15 +65,15 @@ void setup() {
 	leftEncoder.isr = &leftIsr;
 	rightEncoder.isr = &rightIsr;
 	navigator.initialMosh = initialPwm;
-
+	navigator.facing = DIRECTION_N;
 
 	navigator.enableEncoders();
 	speedControl.enable(0);
-	
+
+	EventLogger::port = 4421;
 }
 
 void loop() {	
-
 	wifiEnabled = digitalRead(isWifiEnabledPin);
 	if(wifiEnabled)
 	{
@@ -93,7 +92,7 @@ void loop() {
 				}
 				maze = new HashMap<Tile*>();
 				MappingStrategy mapper(maze, &frontWallDetector, &leftWallDetector, &rightWallDetector, &navigator);
-				Tile* t = mapper.init(DIRECTION_N);
+				Tile* t = mapper.init(navigator.facing);
 				for (; t != nullptr; t = mapper.step(t));
 				led.blink(5);
 			}
@@ -104,7 +103,7 @@ void loop() {
 				if(startTile != nullptr && goalTile != nullptr)
 				{
 					Queue<int> route;
-					if(command.searchAlg = DFS)
+					if(command.searchAlg == DFS)
 						Search::dfs(startTile, goalTile, &route);
 					else if(command.searchAlg == BFS)
 						Search::bfs(startTile, goalTile, &route);
@@ -119,7 +118,7 @@ void loop() {
 						Serial.println(navigator.facing);
 						Serial.print("Route: ");
 						route.print();
-						navigator.executeRoute(&route);
+						navigator.executeRoute(&route,startTile->row, startTile->col);
 					}
 				}
 				else 
@@ -127,7 +126,8 @@ void loop() {
 			} 
 			else if(command.type == SET_IP)
 			{
-				serverIP = command.serverIP;
+				EventLogger::host = command.serverIP;
+				led.blink(4);
 			}
 			command.type = UNDEFINED;
 		}	
@@ -142,5 +142,4 @@ void loop() {
 	//testContinuousWallDetection(&frontWallDetector, &rightWallDetector, &leftWallDetector, &navigator, &props);
 	
 	//motorsSimpleTest(leftMotor, rightMotor);
-	
 }

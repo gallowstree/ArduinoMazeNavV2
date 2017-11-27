@@ -30,8 +30,8 @@ private:
 
     bool enabled = false;
 
-    double minPwm = 25;
-    double maxPwm = 55;
+    double minPwm = 20;
+    double maxPwm = 40;
 
     double input = 0;
     double output = 0;
